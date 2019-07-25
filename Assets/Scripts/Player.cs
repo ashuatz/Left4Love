@@ -50,9 +50,13 @@ public class Player : MonoBehaviour, IDamage
 
     public BaseWeapon CurrentWeapon;
     private Coroutine ShotRoutine;
+    private Coroutine HitGradientRoutine;
 
     private Player LastAttacker = null;
-    
+
+    [SerializeField]
+    private Gradient HitGradient;
+
     [SerializeField]
     private List<PlayerSpritePart> PlayerParts = new List<PlayerSpritePart>();
 
@@ -92,6 +96,7 @@ public class Player : MonoBehaviour, IDamage
         {
             isInvincibility = true;
             StartCoroutine(Timer(1f, () => isInvincibility = false));
+            SetSpriteColor();
         }
         if(current <= 0)
         {
@@ -195,7 +200,33 @@ public class Player : MonoBehaviour, IDamage
             animator.Play("PlayerIdle");
         }
     }
-    
+
+    private void SetSpriteColor()
+    {
+        if (HitGradientRoutine == null)
+            HitGradientRoutine = StartCoroutine(SetSpriteColorInternal(1f));
+    }
+
+    private IEnumerator SetSpriteColorInternal(float time)
+    {
+        float t = 0;
+        while (t < time)
+        {
+            foreach (var part in PlayerParts)
+            {
+                part.setColor(HitGradient.Evaluate(t / time));
+            }
+            t += Time.deltaTime;
+            yield return null;
+        }
+
+        foreach (var part in PlayerParts)
+        {
+            part.setColor(HitGradient.Evaluate(1));
+        }
+        HitGradientRoutine = null;
+    }
+
     //input
     private void PlayerInput_OnClick(bool isPressed)
     {

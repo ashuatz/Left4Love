@@ -35,4 +35,9 @@ public class PlayerSpritePart : MonoBehaviour
         else
             renderer.flipX = flipX;
     }
+
+    public void setColor(Color color)
+    {
+        renderer.color = color;
+    }
 }
