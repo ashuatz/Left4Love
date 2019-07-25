@@ -8,6 +8,8 @@ public class UIPlayerAmmo : MonoBehaviour
 {
     [SerializeField]
     private Player player;
+    [SerializeField]
+    private Image ReloadImage;
 
     [SerializeField]
     private Gradient AmmoGradient;
@@ -20,6 +22,9 @@ public class UIPlayerAmmo : MonoBehaviour
     private AnimationCurve PositionCurve;
     [SerializeField]
     private AnimationCurve ScaleCurve;
+
+    [SerializeField]
+    private AnimationCurve RotationCurve;
 
     private BaseWeapon Weapon;
 
@@ -54,10 +59,11 @@ public class UIPlayerAmmo : MonoBehaviour
         Weapon.Capacity.onNotify += Capacity_onNotify;
     }
 
-    private void Capacity_onNotify(int obj)
+    private void Capacity_onNotify(int idx)
     {
-        if(obj == Weapon.TotalCapacity)
+        if(idx == Weapon.TotalCapacity)
         {
+            ReloadImage.enabled = false;
             for (int i = 0; i < AvailableCells.Count; ++i)
             {
                 AvailableCells[i].color = AmmoGradient.Evaluate((float)i / AvailableCells.Count);
@@ -65,9 +71,29 @@ public class UIPlayerAmmo : MonoBehaviour
         }
         else
         {
-            StartCoroutine(CellAnimation(AvailableCells[obj], Weapon.CoolDown));
-            AvailableCells[obj].color = Color.gray;
+            StartCoroutine(CellAnimation(AvailableCells[idx], Weapon.CoolDown));
+            AvailableCells[idx].color = Color.gray;
         }
+
+        if (idx == 0)
+        {
+            ReloadImage.enabled = true;
+            ReloadImage.transform.localPosition = AvailableCells[AvailableCells.Count / 2].transform.localPosition;
+            StartCoroutine(ReloadAnimation(Weapon.ReChargeCoolDown));
+        }
+    }
+
+    private IEnumerator ReloadAnimation(float time)
+    {
+        float t = 0;
+        while (t < time)
+        {
+            ReloadImage.transform.localEulerAngles = Vector3.forward * RotationCurve.Evaluate(t / time) * 360f;
+            t += Time.deltaTime;
+            yield return null;
+        }
+        ReloadImage.transform.localEulerAngles = Vector3.forward * RotationCurve.Evaluate(1) * 360f;
+
     }
 
     private IEnumerator CellAnimation(Image obj, float time)

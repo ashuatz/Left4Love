@@ -10,6 +10,14 @@ public class Bullet : BaseBullet
         rigid.velocity = dir.normalized * speed;
         HealAmount = Damage = dmg;
         Owner = owner;
+
+        StartCoroutine(AutoRelease());
+    }
+
+    private IEnumerator AutoRelease()
+    {
+        yield return new WaitForSeconds(4f);
+        PoolManager.ReleaseObject(gameObject);
     }
 
     public override void OnTriggerEnter(Collider other)

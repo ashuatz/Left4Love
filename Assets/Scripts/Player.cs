@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Core;
 using Zombi;
+using Com.LuisPedroFonseca.ProCamera2D;
 
 public class Player : MonoBehaviour, IDamage
 {
@@ -97,6 +98,7 @@ public class Player : MonoBehaviour, IDamage
         if(delta < 0)
         {
             isInvincibility = true;
+            ProCamera2DShake.Instance.Shake(0);
             StartCoroutine(Timer(1f, () => isInvincibility = false));
             SetSpriteColor();
         }

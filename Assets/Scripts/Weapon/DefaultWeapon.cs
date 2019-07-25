@@ -17,6 +17,7 @@ public class DefaultWeapon : BaseWeapon
     {
         var obj = PoolManager.SpawnObject(bulletOrigin);
         var bullet = CacheManager.Get<Bullet>(obj);
+        dir = dir.normalized + new Vector3(UnityEngine.Random.Range(-0.1f, 0.1f), 0, UnityEngine.Random.Range(-0.1f, 0.1f));
         bullet.Initialize(StartPosition.position, new Vector3(dir.x, 0, dir.y), Damage, Owner);
         Effect.Play();
 

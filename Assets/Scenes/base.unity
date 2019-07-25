@@ -120,6 +120,101 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 23800000, guid: 48da5ddfcc4758347a663caaf0bb421c, type: 2}
+--- !u!1 &63910275
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 63910276}
+  - component: {fileID: 63910279}
+  - component: {fileID: 63910278}
+  - component: {fileID: 63910277}
+  m_Layer: 0
+  m_Name: Reload
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &63910276
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 63910275}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1736996450}
+  m_RootOrder: 40
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 404.5, y: 6.8499985}
+  m_SizeDelta: {x: 104, y: 140}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &63910277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 63910275}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 21300000, guid: 0446ad6e05fcb824698ea2e1be11ea3f, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+--- !u!222 &63910278
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 63910275}
+  m_CullTransparentMesh: 0
+--- !u!114 &63910279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 63910275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1679637790, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 1
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 17
 --- !u!1 &75200422
 GameObject:
   m_ObjectHideFlags: 0
@@ -4104,6 +4199,7 @@ RectTransform:
   - {fileID: 1716103090}
   - {fileID: 290051037}
   - {fileID: 191730740}
+  - {fileID: 63910276}
   m_Father: {fileID: 2025452812}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4150,6 +4246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 554532532}
+  ReloadImage: {fileID: 63910277}
   AmmoGradient:
     serializedVersion: 2
     key0: {r: 1, g: 0, b: 0.009137154, a: 1}
@@ -4264,6 +4361,48 @@ MonoBehaviour:
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.048059165
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  RotationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: -4.9384723
+      outSlope: -4.9384723
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.31638247
+    - serializedVersion: 3
+      time: 0.20746344
+      value: -0.23942958
+      inSlope: 0.17879882
+      outSlope: 5.906296
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.062292147
+    - serializedVersion: 3
+      time: 0.80537987
+      value: 1.2068975
+      inSlope: 0.5406901
+      outSlope: 0.304976
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.2079816
+      outWeight: 0.6940451
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: -4.327714
+      outSlope: -4.327714
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.4111016
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -5392,6 +5531,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8273676733412514279, guid: 58bab9bf651f4fc4db708d72e2cf491a,
+        type: 3}
+      propertyPath: DefaultCapacity
+      value: 13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 58bab9bf651f4fc4db708d72e2cf491a, type: 3}
