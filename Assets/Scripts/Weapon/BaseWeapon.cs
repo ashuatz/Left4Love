@@ -31,7 +31,17 @@ public abstract class BaseWeapon : MonoBehaviour
 
     public virtual GameObject Owner { get; protected set; }
 
-    public abstract void Rotate(Vector2 dir);
+    public virtual void ReverseSprite(bool isInverse)
+    {
+        GunTransform.localScale = new Vector3(1,isInverse ? -1 : 1, 1);
+    }
+    
+    public virtual void Rotate(Vector2 dir)
+    {
+        var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+        transform.localRotation = Quaternion.AngleAxis(-angle, Vector3.forward);
+    }
     public abstract void Initialize(GameObject Owner);
     public abstract IEnumerator Fire(Vector3 dir, Action onComplete);
 }

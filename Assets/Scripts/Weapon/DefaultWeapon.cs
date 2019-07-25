@@ -32,10 +32,4 @@ public class DefaultWeapon : BaseWeapon
         onComplete?.Invoke();
     }
 
-    public override void Rotate(Vector2 dir)
-    {
-        var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-
-        GunTransform.localRotation = Quaternion.AngleAxis(-angle, Vector3.forward);
-    }
 }

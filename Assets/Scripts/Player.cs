@@ -7,6 +7,8 @@ using Zombi;
 
 public class Player : MonoBehaviour, IDamage
 {
+    public int ID { get; private set; }
+
 
     [SerializeField]
     private Rigidbody rigidbody;
@@ -23,7 +25,10 @@ public class Player : MonoBehaviour, IDamage
 
     [SerializeField]
     private Bullet BulletOrigin;
-    
+
+    [SerializeField]
+    private Animator animator;
+
     [SerializeField]
     private float DefaultShotCoolDown;
     private float ShotCoolDown;
@@ -49,6 +54,10 @@ public class Player : MonoBehaviour, IDamage
     private Coroutine ShotRoutine;
 
     private Player LastAttacker = null;
+    
+
+    [SerializeField]
+    private List<PlayerSpritePart> PlayerParts = new List<PlayerSpritePart>();
 
     private void Awake()
     {
@@ -99,6 +108,7 @@ public class Player : MonoBehaviour, IDamage
         CurrentWeapon.transform.SetParent(HandPosition, false);
         CurrentWeapon.transform.localPosition = Vector3.zero;
         CurrentWeapon.transform.localRotation = Quaternion.identity;
+        CurrentWeapon.Initialize(gameObject);
     }
     
     private IEnumerator Timer(float t, Action onComplete)
@@ -136,8 +146,58 @@ public class Player : MonoBehaviour, IDamage
     private void move()
     {
         rigidbody.velocity = new Vector3(MoveDir.x, 0, MoveDir.y) * MovementSpeed;
+        SetAnimation();
     }
 
+    //animator
+    private void SetSpritePart(Vector2 lastView)
+    {
+        //X flip
+        if (ViewDir.x < 0 && lastView.x >= 0)
+        {
+            CurrentWeapon.ReverseSprite(true);
+            foreach(var part in PlayerParts)
+            {
+                part.SetFlip(true);
+            }
+        }
+        else if (ViewDir.x >= 0 && lastView.x < 0)
+        {
+            CurrentWeapon.ReverseSprite(false);
+            foreach (var part in PlayerParts)
+            {
+                part.SetFlip(false);
+            }
+        }
+
+        if(ViewDir.y < 0 && lastView.y >= 0)
+        {
+            foreach (var part in PlayerParts)
+            {
+                part.Setpart(PlayerSpritePart.PartType.Forward);
+            }
+        }
+        else if(ViewDir.y >= 0 && lastView.y < 0)
+        {
+            foreach (var part in PlayerParts)
+            {
+                part.Setpart(PlayerSpritePart.PartType.Back);
+            }
+        }
+    }
+
+    private void SetAnimation()
+    {
+        if (MoveDir.magnitude > 0)
+        {
+            animator.Play("PlayerMovement");
+        }
+        else
+        {
+            animator.Play("PlayerIdle");
+        }
+    }
+    
     //input
     private void PlayerInput_OnClick(bool isPressed)
     {
@@ -155,10 +215,14 @@ public class Player : MonoBehaviour, IDamage
         if(!isControllable)
             return;
 
+        var lastView = ViewDir;
+
         ViewDir = obj;
         var angle = Mathf.Atan2(obj.y, obj.x) * Mathf.Rad2Deg;
 
         HandPivot.localRotation = Quaternion.AngleAxis(-angle, Vector3.up);
+
+        SetSpritePart(lastView);
         CurrentWeapon?.Rotate(ViewDir);
     }
 
