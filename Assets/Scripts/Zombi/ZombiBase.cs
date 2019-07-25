@@ -1,7 +1,7 @@
 ﻿namespace Zombi
 {
-    public enum ZombiTypeEnum
+    public enum ZombiTypeEnum : int
     {
-        Normal,
+        Normal = 0,
     }
 }

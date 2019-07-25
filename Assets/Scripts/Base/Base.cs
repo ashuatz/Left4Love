@@ -1,10 +1,9 @@
 ﻿interface IDamage
 {
     /// <summary>
-    /// 해당 캐릭터가 죽었는지 여부
-    /// (죽었으면 더이상 공격하지 않기 위함)
+    /// 해당 캐릭터가 공격 가능한지 여부
     /// </summary>
-    bool IsDied
+    bool IsDamageEnable
     {
         get;
     }

@@ -7,16 +7,13 @@ namespace Zombi
 {
     public class ZombiManager : MonoSingleton<ZombiManager>
     {
-        #region Type
-        private struct ZombiPoolStruct
-        {
-            public List<Zombi> spawned;
-            public List<Zombi> died;
-        }
+        #region Inspector
+        [Header("Prefab")]
+        [SerializeField] private GameObject[] m_ZombiPrefab;
         #endregion
-
         #region Value
-        private Dictionary<GameObject, ZombiPoolStruct> m_SpawnedZombi = new Dictionary<GameObject, ZombiPoolStruct>();
+        private List<GameObject> m_Player = new List<GameObject>();
+        private Dictionary<GameObject, List<Zombi>> m_SpawnedZombi = new Dictionary<GameObject, List<Zombi>>();
         #endregion
 
         #region Event
@@ -33,25 +30,50 @@ namespace Zombi
         #region Function
         //Public
         /// <summary>
+        /// 좀비의 주인 리스트를 가져옵니다.
+        /// </summary>
+        /// <returns></returns>
+        public List<GameObject> GetOwnerList()
+        {
+            return m_Player;
+        }
+        /// <summary>
         /// 현재 생성되어 있는 좀비 리스트를 가져옵니다.
         /// </summary>
-        /// <param name="player">어떤 플레이어의 좀비를 가져올지</param>
+        /// <param name="owner">어디 소속의 좀비를 가져올지</param>
         /// <returns></returns>
-        public List<Zombi> GetSpawnedZombi(GameObject player)
+        public List<Zombi> GetSpawnedZombiList(GameObject owner)
         {
-            ZombiPoolStruct zombiPool;
-            if (m_SpawnedZombi.TryGetValue(player, out zombiPool))
-                return zombiPool.spawned;
-            else
-                return null;
+            return GetZombiPool(owner);
         }
         /// <summary>
         /// 좀비를 생성합니다.
         /// </summary>
-        /// <param name="player"></param>
-        public void SpawnZombi(GameObject player)
+        /// <param name="owner">해당 좀비의 주인</param>
+        public Zombi SpawnZombi(GameObject owner, Transform targetPos, ZombiTypeEnum type)
         {
+            GameObject go = Instantiate(m_ZombiPrefab[(int)type], targetPos.position, Quaternion.identity);
+            Zombi zombi = go.GetComponent<Zombi>();
+            zombi.Init(owner);
 
+            List<Zombi> pool = GetZombiPool(owner);
+            pool.Add(zombi);
+
+            return zombi;
+        }
+        #endregion
+        #region Function
+        private List<Zombi> GetZombiPool(GameObject owner)
+        {
+            List<Zombi> zombiPool;
+            if (!m_SpawnedZombi.TryGetValue(owner, out zombiPool))
+            {
+                zombiPool = new List<Zombi>();
+                m_SpawnedZombi.Add(owner, zombiPool);
+                m_Player.Add(owner);
+            }
+
+            return zombiPool;
         }
         #endregion
     }
