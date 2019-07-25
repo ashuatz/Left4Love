@@ -65,7 +65,7 @@ namespace Zombi
         #endregion
         #region Value
         private GameObject m_TargetPlayer;                      //공격 타겟 플레이어
-        private ZombiCharacter m_TargetZombi;                            //공격 타겟 좀비
+        private ZombiCharacter m_TargetZombi;                   //공격 타겟 좀비
 
         private Action[] m_StateUpdate;                         //각 State의 Update
         private StateNextEvent[] m_StateNext;                   //각 State의 다음으로 넘어가는 조건
@@ -74,6 +74,7 @@ namespace Zombi
         #region Event
         internal void Init(GameObject owner)
         {
+            ownerPlayer = owner;
             m_StateUpdate = new Action[] { StateSpawning, StateIdle, StateMove, StateAttack, StateLove, StateDie };
             m_StateNext = new StateNextEvent[] { StateSpawningNext, StateIdleNext, StateMoveNext, StateAttackNext, StateLoveNext, StateDieNext };
         }
@@ -83,6 +84,9 @@ namespace Zombi
         {
             SetState(m_StateNext[(int)zombiState]());
             m_StateUpdate[(int)zombiState]();
+        }
+        private void OnDrawGizmosSelected()
+        {
         }
 
         //IDamage
