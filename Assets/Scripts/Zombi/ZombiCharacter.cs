@@ -29,6 +29,11 @@ namespace Zombi
         [SerializeField] private float m_ZombiTime;             //좀비 지속시간
         #endregion
         #region Get,Set
+        public GameObject ownerPlayer
+        {
+            get;
+            private set;
+        }
         public ZombiTypeEnum zombiType
         {
             get;
@@ -59,7 +64,6 @@ namespace Zombi
         }
         #endregion
         #region Value
-        private GameObject m_OwnerPlayer;                       //주인 플레이어
         private GameObject m_TargetPlayer;                      //공격 타겟 플레이어
         private ZombiCharacter m_TargetZombi;                            //공격 타겟 좀비
 
@@ -134,7 +138,7 @@ namespace Zombi
             if (m_TargetZombi)
                 target = m_TargetZombi.transform;
             else
-                target = (m_TargetPlayer ? m_TargetPlayer : m_OwnerPlayer).transform;
+                target = (m_TargetPlayer ? m_TargetPlayer : ownerPlayer).transform;
 
             return target;
         }
@@ -221,7 +225,7 @@ namespace Zombi
             float nextZombiPriority = float.MaxValue;
             for (int i = 0; i < ownerList.Count; ++i)
             {
-                if (ownerList[i] != m_OwnerPlayer)
+                if (ownerList[i] != ownerPlayer)
                 {
                     List<ZombiCharacter> zombiList = zombiManager.GetSpawnedZombiList(ownerList[i]);
                     for (int j = 0; j < zombiList.Count; ++j)
