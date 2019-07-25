@@ -9,7 +9,7 @@ using Com.LuisPedroFonseca.ProCamera2D;
 public class Player : MonoBehaviour, IDamage
 {
     public int ID { get; private set; }
-    
+
     [SerializeField]
     private Rigidbody rigidbody;
     [SerializeField]
@@ -51,6 +51,8 @@ public class Player : MonoBehaviour, IDamage
     public bool IsDamageEnable => !isInvincibility;
     public bool IsHealEnable => true;
 
+    public bool IsCanUseSpecital { get; private set; }
+
     public BaseWeapon CurrentWeapon;
     private Coroutine ShotRoutine;
     private Coroutine HitGradientRoutine;
@@ -64,12 +66,13 @@ public class Player : MonoBehaviour, IDamage
     private List<PlayerSpritePart> PlayerParts = new List<PlayerSpritePart>();
 
     public event Action<BaseWeapon> OnWeaponChanged;
-    
+
     private void Awake()
     {
         Attackable = true;
         isInvincibility = false;
         isControllable = true;
+        IsCanUseSpecital = true;
 
         HP.value = MAXHP;
         LoveGauge.value = 0;
@@ -107,14 +110,14 @@ public class Player : MonoBehaviour, IDamage
     private void HP_onNotifyDelta(float last, float current)
     {
         var delta = current - last;
-        if(delta < 0)
+        if (delta < 0)
         {
             isInvincibility = true;
             ProCamera2DShake.Instance.Shake(0);
             StartCoroutine(Timer(1f, () => isInvincibility = false));
             SetSpriteColor();
         }
-        if(current <= 0)
+        if (current <= 0)
         {
             //dead
             Debug.Log("TODO : DEAD");
@@ -130,7 +133,7 @@ public class Player : MonoBehaviour, IDamage
 
         OnWeaponChanged?.Invoke(CurrentWeapon);
     }
-    
+
     private IEnumerator Timer(float t, Action onComplete)
     {
         yield return new WaitForSeconds(t);
@@ -177,7 +180,7 @@ public class Player : MonoBehaviour, IDamage
         if (ViewDir.x < 0 && lastView.x >= 0)
         {
             CurrentWeapon.ReverseSprite(true);
-            foreach(var part in PlayerParts)
+            foreach (var part in PlayerParts)
             {
                 part.SetFlip(true);
             }
@@ -191,14 +194,14 @@ public class Player : MonoBehaviour, IDamage
             }
         }
 
-        if(ViewDir.y < 0 && lastView.y >= 0)
+        if (ViewDir.y < 0 && lastView.y >= 0)
         {
             foreach (var part in PlayerParts)
             {
                 part.Setpart(PlayerSpritePart.PartType.Forward);
             }
         }
-        else if(ViewDir.y >= 0 && lastView.y < 0)
+        else if (ViewDir.y >= 0 && lastView.y < 0)
         {
             foreach (var part in PlayerParts)
             {
@@ -250,7 +253,7 @@ public class Player : MonoBehaviour, IDamage
     {
         if (!isControllable || !Attackable)
             return;
-        
+
         if (isPressed && ShotRoutine == null)
         {
             ShotRoutine = StartCoroutine(CurrentWeapon.Fire(ViewDir, () => ShotRoutine = null));
@@ -259,15 +262,20 @@ public class Player : MonoBehaviour, IDamage
 
     private void PlayerInput_OnSpectialClick()
     {
+        if (!IsCanUseSpecital)
+            return;
+
         var obj = PoolManager.SpawnObject(GrenadeOrigin.gameObject);
         var grenade = CacheManager.Get<GrenadeWeapon>(obj);
         grenade.transform.position = transform.position + Vector3.up;
         grenade.Initialize(ViewDir, gameObject);
+
+        StartCoroutine(Timer(5f, () => IsCanUseSpecital = true));
     }
 
     private void PlayerInput_OnViewDirection(Vector2 obj)
     {
-        if(!isControllable)
+        if (!isControllable)
             return;
 
         var lastView = ViewDir;
@@ -288,5 +296,5 @@ public class Player : MonoBehaviour, IDamage
 
         MoveDir = obj;
     }
-    
+
 }
