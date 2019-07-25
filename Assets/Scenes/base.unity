@@ -5789,6 +5789,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7443618724013763007, guid: 58bab9bf651f4fc4db708d72e2cf491a,
+        type: 3}
+      propertyPath: playerInput
+      value: 
+      objectReference: {fileID: 1713135567}
     - target: {fileID: 8273676733412514279, guid: 58bab9bf651f4fc4db708d72e2cf491a,
         type: 3}
       propertyPath: DefaultCapacity
@@ -7817,6 +7822,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7443618724013763007, guid: 58bab9bf651f4fc4db708d72e2cf491a,
+        type: 3}
+      propertyPath: playerInput
+      value: 
+      objectReference: {fileID: 308950029}
     - target: {fileID: 8273676733412514279, guid: 58bab9bf651f4fc4db708d72e2cf491a,
         type: 3}
       propertyPath: DefaultCapacity
@@ -7947,6 +7957,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7443618724013763007, guid: 58bab9bf651f4fc4db708d72e2cf491a,
+        type: 3}
+      propertyPath: playerInput
+      value: 
+      objectReference: {fileID: 1167147609}
     - target: {fileID: 8273676733412514279, guid: 58bab9bf651f4fc4db708d72e2cf491a,
         type: 3}
       propertyPath: DefaultCapacity
