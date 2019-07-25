@@ -55,16 +55,16 @@ public class SpawnManager : MonoSingleton<SpawnManager>
     protected override void Awake()
     {
         base.Awake();
-        Init();
-    }
-    private void Init()
-    {
-        m_IsInited = true;
 
+        m_IsInited = true;
         m_ZombiSpawnTimer = m_ZombiSpawnData.startSpawnTime;
         m_ItemSpawnTimer = m_ItemSpawnData.startSpawnTime;
         m_ZombiAttackTimer = m_ZombiAttackData.attackTime;
         m_ZombiAttackCount = m_ZombiAttackData.firstAttackCount;
+    }
+    private void Start()
+    {
+        ZombiManager.Instance.AddOwner(gameObject);
     }
     private void Update()
     {

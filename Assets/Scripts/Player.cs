@@ -77,6 +77,11 @@ public class Player : MonoBehaviour, IDamage
         HP.onNotifyDelta += HP_onNotifyDelta;
         LoveGauge.onNotifyDelta += LoveGauge_onNotifyDelta;
     }
+    private void Start()
+    {
+        ZombiManager zombi = ZombiManager.Instance;
+        zombi.AddOwner(gameObject);
+    }
 
     private void LoveGauge_onNotifyDelta(float last, float current)
     {
