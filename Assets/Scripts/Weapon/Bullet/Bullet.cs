@@ -36,11 +36,11 @@ public class Bullet : BaseBullet
     {
         if (other.attachedRigidbody && !isUse )
         {
-            isUse = true;
 
             Player player = other.GetComponent<Player>();
             if(player != null && Owner != player)
             {
+                isUse = true;
                 Hit.Play();
                 player.Damage(Damage, Owner);
                 rigid.velocity = Vector3.zero;
@@ -49,6 +49,7 @@ public class Bullet : BaseBullet
             ZombiCharacter zombi = other.attachedRigidbody.GetComponent<ZombiCharacter>();
             if (zombi != null && zombi.ownerPlayer != Owner)
             {
+                isUse = true;
                 Hit.Play();
                 zombi.Damage(Damage, Owner);
                 rigid.velocity = Vector3.zero;
