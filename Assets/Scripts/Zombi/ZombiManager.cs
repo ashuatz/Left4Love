@@ -13,20 +13,10 @@ namespace Zombi
         #endregion
         #region Value
         private List<GameObject> m_Player = new List<GameObject>();
+        private List<GameObject> m_All = new List<GameObject>();
         private Dictionary<GameObject, List<ZombiCharacter>> m_SpawnedZombi = new Dictionary<GameObject, List<ZombiCharacter>>();
         #endregion
 
-        #region Event
-        protected override void Awake()
-        {
-            base.Awake();
-
-            if (Instance == this)
-            {
-
-            }
-        }
-        #endregion
         #region Function
         //Public
         /// <summary>
@@ -39,15 +29,24 @@ namespace Zombi
             {
                 m_SpawnedZombi.Add(owner, new List<ZombiCharacter>());
                 m_Player.Add(owner);
+                m_All.Add(owner);
             }
         }
         /// <summary>
-        /// 좀비의 주인 리스트를 가져옵니다.
+        /// 좀비의 플레이어 주인 리스트를 가져옵니다.
         /// </summary>
         /// <returns></returns>
-        public List<GameObject> GetOwnerList()
+        public List<GameObject> GetPlayerOwnerList()
         {
             return m_Player;
+        }
+        /// <summary>
+        /// 좀비의 모든 주인 리스트를 가져옵니다.
+        /// </summary>
+        /// <returns></returns>
+        public List<GameObject> GetAllOwnerList()
+        {
+            return m_All;
         }
         /// <summary>
         /// 현재 생성되어 있는 좀비 리스트를 가져옵니다.
@@ -82,6 +81,17 @@ namespace Zombi
             GetZombiPool(zombi.ownerPlayer).Remove(zombi);
             Destroy(zombi.gameObject);
         }
+        /// <summary>
+        /// 좀비 주인을 변경합니다.
+        /// </summary>
+        /// <param name="zombi"></param>
+        /// <param name="nextOwner"></param>
+        public void ChangeZombiOwner(ZombiCharacter zombi, GameObject nextOwner)
+        {
+            GetZombiPool(zombi.ownerPlayer).Remove(zombi);
+            zombi.Init(nextOwner);
+            GetZombiPool(zombi.ownerPlayer).Add(zombi);
+        }
         #endregion
         #region Function
         private List<ZombiCharacter> GetZombiPool(GameObject owner)
@@ -93,7 +103,10 @@ namespace Zombi
                 m_SpawnedZombi.Add(owner, zombiPool);
 
                 if (owner.GetComponent<Player>())
+                {
                     m_Player.Add(owner);
+                    m_All.Add(owner);
+                }
             }
 
             return zombiPool;
