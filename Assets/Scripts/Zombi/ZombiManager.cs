@@ -30,6 +30,18 @@ namespace Zombi
         #region Function
         //Public
         /// <summary>
+        /// 주인 리스트에 추가합니다.
+        /// </summary>
+        /// <param name="owner"></param>
+        public void AddOwner(GameObject owner)
+        {
+            if (!m_SpawnedZombi.ContainsKey(owner))
+            {
+                m_SpawnedZombi.Add(owner, new List<ZombiCharacter>());
+                m_Player.Add(owner);
+            }
+        }
+        /// <summary>
         /// 좀비의 주인 리스트를 가져옵니다.
         /// </summary>
         /// <returns></returns>
@@ -79,7 +91,9 @@ namespace Zombi
             {
                 zombiPool = new List<ZombiCharacter>();
                 m_SpawnedZombi.Add(owner, zombiPool);
-                m_Player.Add(owner);
+
+                if (owner.GetComponent<Player>())
+                    m_Player.Add(owner);
             }
 
             return zombiPool;

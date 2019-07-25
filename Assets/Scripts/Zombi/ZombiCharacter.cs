@@ -10,13 +10,31 @@ namespace Zombi
     public class ZombiCharacter : MonoBehaviour, IDamage
     {
         #region Type
+        [System.Serializable] public struct BodyPartObjStruct
+        {
+            public SpriteRenderer body;
+            public SpriteRenderer hand;
+            public SpriteRenderer leg2;
+            public SpriteRenderer leg1;
+            public SpriteRenderer head;
+            public SpriteRenderer hair;
+        }
+        [System.Serializable] public struct BodyPartSprStruct
+        {
+            public Sprite body;
+            public Sprite hand;
+            public Sprite leg2;
+            public Sprite leg1;
+            public Sprite head;
+            public Sprite hair;
+        }
+
         public enum ZombiState
         {
             Spawn,
             Idle,
             Move,
             Attack,
-            Love,
             Die
         }
 
@@ -27,7 +45,16 @@ namespace Zombi
         [Header("Component")]
         [SerializeField] private NavMeshAgent m_Agent;
         [SerializeField] private Rigidbody m_Rigidbody;
-        [SerializeField] private Animator m_Animator;
+        [SerializeField] private Transform m_ZombiRoot;
+        [SerializeField] private Animator m_FrontAnimator;
+        [SerializeField] private Animator m_BackAnimator;
+        [SerializeField] private Collider m_Collider;
+        [SerializeField] private BodyPartObjStruct m_FrontObj;
+        [SerializeField] private BodyPartObjStruct m_BackObj;
+
+        [Header("Sprite")]
+        [SerializeField] private BodyPartSprStruct[] m_FrontSpr;
+        [SerializeField] private BodyPartSprStruct[] m_BackSpr;
 
         [Header("Balance")]
         [SerializeField] private int m_MaxHP;                   //체력
@@ -56,10 +83,9 @@ namespace Zombi
             get
             {
                 bool isNotDied = zombiState == ZombiState.Die;
-                bool isNotLove = zombiState == ZombiState.Love;
                 bool isNotSpawning = zombiState == ZombiState.Spawn;
 
-                return isNotDied & isNotLove & isNotSpawning;
+                return isNotDied & isNotSpawning;
             }
         }
 
@@ -84,9 +110,9 @@ namespace Zombi
         #region Event
         internal void Init(GameObject owner)
         {
-            ownerPlayer = owner;
-            m_StateUpdate = new Action[] { StateSpawning, StateIdle, StateMove, StateAttack, StateLove, StateDie };
-            m_StateNext = new StateNextEvent[] { StateSpawningNext, StateIdleNext, StateMoveNext, StateAttackNext, StateLoveNext, StateDieNext };
+            SetOwner(owner);
+            m_StateUpdate = new Action[] { StateSpawning, StateIdle, StateMove, StateAttack, StateDie };
+            m_StateNext = new StateNextEvent[] { StateSpawningNext, StateIdleNext, StateMoveNext, StateAttackNext, StateDieNext };
 
             m_HP.value = m_MaxHP;
         }
@@ -98,6 +124,15 @@ namespace Zombi
             m_StateUpdate[(int)zombiState]();
 
             m_Rigidbody.velocity = Vector3.zero;
+
+            //애니메이션 방향
+            bool isBack = (0 < m_Agent.velocity.y);
+            m_FrontAnimator.gameObject.SetActive(!isBack);
+            m_BackAnimator.gameObject.SetActive(isBack);
+
+            bool isRight = (0 <= m_Agent.velocity.x);
+            m_FrontAnimator.transform.localScale = new Vector3(isRight ? 1 : -1, 1, 1);
+            m_BackAnimator.transform.localScale = new Vector3(isRight ? 1 : -1, 1, 1);
         }
         private void OnCollisionStay(Collision collision)
         {
@@ -128,7 +163,15 @@ namespace Zombi
             m_HP.value = Mathf.Max(m_HP.value - damage, 0);
 
             if (m_HP.value <= 0)
-                SetState(ZombiState.Die);
+            {
+                if (attacker.GetComponent<ZombiCharacter>())
+                    SetState(ZombiState.Die);
+                else
+                {
+                    SetOwner(attacker);
+                    SetState(ZombiState.Idle);
+                }
+            }
         }
         public void Heal(int amount)
         {
@@ -166,7 +209,11 @@ namespace Zombi
         }
         private ZombiState StateIdleNext()
         {
-            return ZombiState.Idle;
+            Transform target = UpdateMoveTarget();
+            if (target)
+                return ZombiState.Move;
+            else
+                return ZombiState.Idle;
         }
 
         //Move
@@ -192,12 +239,27 @@ namespace Zombi
             if (m_TargetZombi == null)
                 SetTargetZombi(GetNextAttackZombi());
 
+            if (m_TargetPlayer == null)
+                m_TargetPlayer = GetNextAttackPlayer();
+
             //이동 타겟 구하기
             Transform target = null;
-            if (m_TargetZombi)
+            if (m_TargetZombi && !m_TargetPlayer)       //타겟이 좀비만 있을때
                 target = m_TargetZombi.transform;
-            else
-                target = (m_TargetPlayer ? m_TargetPlayer : ownerPlayer).transform;
+            else if (!m_TargetZombi && m_TargetPlayer)  //타겟이 플레이어만 있을때
+                target = m_TargetPlayer.transform;
+            else if(m_TargetPlayer && m_TargetZombi)    //타겟이 둘 다 있을 때
+            {
+                float zombiPriority = GetAttackZombiPriority(m_TargetZombi, false);
+                float playerPriority = GetAttackPlayerPriority(m_TargetPlayer);
+
+                target = (zombiPriority < playerPriority) ? m_TargetZombi.transform : m_TargetPlayer.transform;
+            }
+            else                                        //타겟이 없을때
+            {
+                if (ownerPlayer && ownerPlayer.GetComponent<Player>())
+                    target = ownerPlayer.transform;
+            }
 
             return target;
         }
@@ -209,15 +271,6 @@ namespace Zombi
         private ZombiState StateAttackNext()
         {
             return ZombiState.Attack;
-        }
-
-        //Love
-        private void StateLove()
-        {
-        }
-        private ZombiState StateLoveNext()
-        {
-            return ZombiState.Love;
         }
 
         //Die
@@ -241,15 +294,55 @@ namespace Zombi
             ZombiState oldState = zombiState;
             zombiState = state;
 
+            //사망상태에서 다른걸로는 못넘어간다.
+            if (oldState == ZombiState.Die)
+                zombiState = ZombiState.Die;
+
             //State 변경시의 추가 처리
-            if(oldState != state)
+            if (oldState != zombiState)
             {
                 //Attack이나 이동이 아닌 경우는 다른 좀비를 타겟으로 하지 않는다.
-                if(state != ZombiState.Attack && state != ZombiState.Move)
+                if(zombiState != ZombiState.Attack && zombiState != ZombiState.Move)
                     SetTargetZombi(null);
 
+                //사망시 콜라이더 소멸
+                if (zombiState == ZombiState.Die)
+                {
+                    m_Collider.enabled = false;
+                    m_Rigidbody.isKinematic = true;
+                    m_Rigidbody.velocity = Vector3.zero;
+                    m_Agent.enabled = false;
+                }
+
                 //변경된 State에 따른 애니메이션 재생
-                m_Animator.SetTrigger(state.ToString());
+                m_FrontAnimator.SetTrigger(zombiState.ToString());
+                m_BackAnimator.SetTrigger(zombiState.ToString());
+            }
+        }
+        /// <summary>
+        /// 해당 좀비의 주인을 설정한다.
+        /// </summary>
+        /// <param name="owner">주인</param>
+        private void SetOwner(GameObject owner)
+        {
+            ownerPlayer = owner;
+
+            if(owner.GetComponent<Player>())
+            {
+                ZombiManager zombiManager = ZombiManager.Instance;
+                List<GameObject> ownerList = zombiManager.GetOwnerList();
+                for (int i = 0; i < ownerList.Count; ++i)
+                {
+                    if(owner == ownerList[i])
+                    {
+                        SetSprite(i);
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                SetSprite(m_FrontSpr.Length - 1);
             }
         }
 
@@ -289,9 +382,9 @@ namespace Zombi
                     for (int j = 0; j < zombiList.Count; ++j)
                     {
                         //좀비의 우선순위 / 공격가능을 구한다.
-                        if(GetAttackEnable(zombiList[j]))
+                        if(GetAttackZombiEnable(zombiList[j]))
                         {
-                            float priority = GetAttackPriority(zombiList[j]);
+                            float priority = GetAttackZombiPriority(zombiList[j], true);
                             if(priority < nextZombiPriority)
                             {
                                 nextZombi = zombiList[j];
@@ -305,11 +398,39 @@ namespace Zombi
             return nextZombi;
         }
         /// <summary>
+        /// 다음번으로 공격할 플레이어를 구한다.
+        /// </summary>
+        /// <returns></returns>
+        private GameObject GetNextAttackPlayer()
+        {
+            //사용할것들
+            ZombiManager zombiManager = ZombiManager.Instance;
+
+            //플레이어를 순회해서 공격 가능한지 구한다
+            List<GameObject> ownerList = zombiManager.GetOwnerList();
+            GameObject nextOwner = null;
+            float nextOwnerPriority = float.MaxValue;
+            for (int i = 0; i < ownerList.Count; ++i)
+            {
+                if (GetAttackPlayerEnable(ownerList[i]))
+                {
+                    float priority = GetAttackPlayerPriority(ownerList[i]);
+                    if (priority < nextOwnerPriority)
+                    {
+                        nextOwner = ownerList[i];
+                        nextOwnerPriority = priority;
+                    }
+                }
+            }
+
+            return nextOwner;
+        }
+        /// <summary>
         /// 공격 가능한 좀비인지 구한다.
         /// </summary>
         /// <param name="target">타겟</param>
         /// <returns></returns>
-        private bool GetAttackEnable(ZombiCharacter target)
+        private bool GetAttackZombiEnable(ZombiCharacter target)
         {
             bool isDistEnable = Vector3.Distance(transform.position, target.transform.position) <= m_ZombiSearchDist;
 
@@ -320,12 +441,60 @@ namespace Zombi
         /// </summary>
         /// <param name="target">공격 타겟(후보)</param>
         /// <returns></returns>
-        private float GetAttackPriority(ZombiCharacter target)
+        private float GetAttackZombiPriority(ZombiCharacter target, bool isUseAddScore)
         {
             float dist = Vector3.Distance(transform.position, target.transform.position);
             float addScore = target.Priority;
 
-            return dist + addScore;
+            return dist + (isUseAddScore ? addScore : 0);
+        }
+        /// <summary>
+        /// 공격 가능한 플레이어인지 구한다.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        private bool GetAttackPlayerEnable(GameObject target)
+        {
+            Player player = target.GetComponent<Player>();
+            if (player)
+            {
+                bool isDistEnable = Vector3.Distance(transform.position, target.transform.position) <= m_ZombiSearchDist;
+
+                return isDistEnable & player.IsDamageEnable;
+            }
+            else
+                return false;
+        }
+        /// <summary>
+        /// 공격 우선순위 점수를 구한다. (낮을수록 공격 우선순윙가 높다.)
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        private float GetAttackPlayerPriority(GameObject target)
+        {
+            float dist = Vector3.Distance(transform.position, target.transform.position);
+
+            return dist;
+        }
+        /// <summary>
+        /// 스프라이트를 설정합니다.
+        /// </summary>
+        /// <param name="index"></param>
+        private void SetSprite(int index)
+        {
+            m_FrontObj.body.sprite = m_FrontSpr[index].body;
+            m_FrontObj.hand.sprite = m_FrontSpr[index].hand;
+            m_FrontObj.hair.sprite = m_FrontSpr[index].hair;
+            m_FrontObj.leg2.sprite = m_FrontSpr[index].leg2;
+            m_FrontObj.leg1.sprite = m_FrontSpr[index].leg1;
+            m_FrontObj.head.sprite = m_FrontSpr[index].head;
+            m_FrontObj.hair.sprite = m_FrontSpr[index].hair;
+
+            m_BackObj.body.sprite = m_BackSpr[index].body;
+            m_BackObj.hair.sprite = m_BackSpr[index].hair;
+            m_BackObj.leg2.sprite = m_BackSpr[index].leg2;
+            m_BackObj.leg1.sprite = m_BackSpr[index].leg1;
+            m_BackObj.hair.sprite = m_BackSpr[index].hair;
         }
         #endregion
     }
