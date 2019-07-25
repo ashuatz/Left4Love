@@ -80,6 +80,8 @@ namespace PopupSystem
         private void Awake()
         {
             Init();
+
+            HelpPopup.instance.Open();
         }
         private void Update()
         {
