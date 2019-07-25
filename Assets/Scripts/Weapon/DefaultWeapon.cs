@@ -18,6 +18,7 @@ public class DefaultWeapon : BaseWeapon
         var obj = PoolManager.SpawnObject(bulletOrigin);
         var bullet = CacheManager.Get<Bullet>(obj);
         bullet.Initialize(StartPosition.position, new Vector3(dir.x, 0, dir.y), Damage, Owner);
+        Effect.Play();
 
         Capacity -= 1;
         if (Capacity <= 0)

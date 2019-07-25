@@ -22,6 +22,9 @@ public abstract class BaseWeapon : MonoBehaviour
     protected Transform StartPosition;
 
     [SerializeField]
+    protected ParticleSystem Effect;
+
+    [SerializeField]
     protected Transform GunTransform;
     
     public virtual float CoolDown { get; protected set; }

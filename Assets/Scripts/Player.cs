@@ -8,8 +8,7 @@ using Zombi;
 public class Player : MonoBehaviour, IDamage
 {
     public int ID { get; private set; }
-
-
+    
     [SerializeField]
     private Rigidbody rigidbody;
     [SerializeField]
@@ -39,7 +38,6 @@ public class Player : MonoBehaviour, IDamage
     private bool isControllable;
     
     private SubjectValue<float> HP = new SubjectValue<float>(1000);
-    
     private SubjectValue<float> LoveGauge = new SubjectValue<float>(0);
 
     public Vector2 MoveDir { get; private set; }
@@ -55,7 +53,6 @@ public class Player : MonoBehaviour, IDamage
 
     private Player LastAttacker = null;
     
-
     [SerializeField]
     private List<PlayerSpritePart> PlayerParts = new List<PlayerSpritePart>();
 
@@ -117,6 +114,7 @@ public class Player : MonoBehaviour, IDamage
         onComplete?.Invoke();
     }
 
+    //Interaction
     public void Damage(int damage, GameObject attacker)
     {
         //Player Attack
