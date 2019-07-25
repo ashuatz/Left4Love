@@ -265,6 +265,8 @@ public class Player : MonoBehaviour, IDamage
         if (!IsCanUseSpecital)
             return;
 
+        IsCanUseSpecital = false;
+
         var obj = PoolManager.SpawnObject(GrenadeOrigin.gameObject);
         var grenade = CacheManager.Get<GrenadeWeapon>(obj);
         grenade.transform.position = transform.position + Vector3.up;
