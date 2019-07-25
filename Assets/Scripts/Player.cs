@@ -86,14 +86,14 @@ public class Player : MonoBehaviour, IDamage
     private void LoveGauge_onNotifyDelta(float last, float current)
     {
         var delta = current - last;
-        if(current >= 10)
+        if (current >= 10)
         {
             //cc
             isControllable = false;
 
-            var dir = (transform.position - LastAttacker.transform.position);
+            var dir = (LastAttacker.transform.position - transform.position).normalized;
             MoveDir = new Vector2(dir.x, dir.z);
-            StartCoroutine(Timer(2f, () => isControllable = true));
+            StartCoroutine(Timer(2f, () => { isControllable = true; MoveDir = Vector2.zero; }));
         }
     }
 
@@ -137,8 +137,8 @@ public class Player : MonoBehaviour, IDamage
         var player = attacker.GetComponent<Player>();
         if (player != null)
         {
-            LoveGauge.value += damage;
             LastAttacker = player;
+            LoveGauge.value += damage;
         }
         var zombi = attacker.GetComponent<ZombiCharacter>();
         if (zombi != null)
