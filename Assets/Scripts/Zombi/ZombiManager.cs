@@ -34,6 +34,26 @@ namespace Zombi
             }
         }
         /// <summary>
+        /// 주인 리스트에서 제거 합니다.
+        /// </summary>
+        /// <param name="owner"></param>
+        public void RemoveOwner(GameObject owner)
+        {
+            List<ZombiCharacter> zombiList = m_SpawnedZombi[owner];
+            for (int i = 0; i < zombiList.Count; ++i)
+                ChangeZombiOwner(zombiList[i], SpawnManager.Instance.gameObject);
+            m_SpawnedZombi.Remove(owner);
+            if (owner.GetComponent<Player>())
+                m_Player.Remove(owner);
+            m_All.Remove(owner);
+
+            if(m_Player.Count == 1 && m_Player[0].name == "Player")
+            {
+                //승리!
+                WinPopup.instance.Open(true);
+            }
+        }
+        /// <summary>
         /// 좀비의 플레이어 주인 리스트를 가져옵니다.
         /// </summary>
         /// <returns></returns>

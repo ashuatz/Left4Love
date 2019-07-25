@@ -77,6 +77,10 @@ namespace PopupSystem
 
         #region Event
         //UnityEvent
+        private void Awake()
+        {
+            Init();
+        }
         private void Update()
         {
             if (0 < m_OpenPopupStackPoint && Input.GetKeyDown(KeyCode.Escape))

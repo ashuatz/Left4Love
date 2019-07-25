@@ -560,7 +560,7 @@ namespace Zombi
                 }
             }
 
-            return ownerList.Count;
+            return 4;
         }
         #endregion
     }
