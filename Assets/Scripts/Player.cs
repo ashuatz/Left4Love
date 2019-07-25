@@ -37,9 +37,11 @@ public class Player : MonoBehaviour, IDamage
     private bool Attackable;
     private bool isInvincibility;
     private bool isControllable;
-    
-    private SubjectValue<float> HP = new SubjectValue<float>(1000);
-    private SubjectValue<float> LoveGauge = new SubjectValue<float>(0);
+
+    public const float MAXHP = 3;
+    public const float MAXLOVEGAUGE = 10;
+    public SubjectValue<float> HP = new SubjectValue<float>(3);
+    public SubjectValue<float> LoveGauge = new SubjectValue<float>(0);
 
     public Vector2 MoveDir { get; private set; }
     public Vector2 ViewDir { get; private set; }
@@ -62,12 +64,15 @@ public class Player : MonoBehaviour, IDamage
     private List<PlayerSpritePart> PlayerParts = new List<PlayerSpritePart>();
 
     public event Action<BaseWeapon> OnWeaponChanged;
-
+    
     private void Awake()
     {
         Attackable = true;
         isInvincibility = false;
         isControllable = true;
+
+        HP.value = MAXHP;
+        LoveGauge.value = 0;
 
         playerInput.OnMoveDirection += PlayerInput_OnMoveDirection;
         playerInput.OnViewDirection += PlayerInput_OnViewDirection;
@@ -88,7 +93,7 @@ public class Player : MonoBehaviour, IDamage
     private void LoveGauge_onNotifyDelta(float last, float current)
     {
         var delta = current - last;
-        if (current >= 10)
+        if (current >= MAXLOVEGAUGE)
         {
             //cc
             isControllable = false;
