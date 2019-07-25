@@ -546,7 +546,7 @@ namespace Zombi
                 }
             }
 
-            return ownerList.Count + 1;
+            return ownerList.Count;
         }
         #endregion
     }

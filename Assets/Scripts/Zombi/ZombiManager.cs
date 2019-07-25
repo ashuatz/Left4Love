@@ -28,7 +28,8 @@ namespace Zombi
             if (!m_SpawnedZombi.ContainsKey(owner))
             {
                 m_SpawnedZombi.Add(owner, new List<ZombiCharacter>());
-                m_Player.Add(owner);
+                if (owner.GetComponent<Player>())
+                    m_Player.Add(owner);
                 m_All.Add(owner);
             }
         }

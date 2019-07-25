@@ -13,7 +13,7 @@ public class Player : MonoBehaviour, IDamage
     [SerializeField]
     private Rigidbody rigidbody;
     [SerializeField]
-    private PlayerInput playerInput;
+    private BaseInput playerInput;
 
     [SerializeField]
     private float MovementSpeed;
