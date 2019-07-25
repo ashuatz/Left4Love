@@ -12,6 +12,7 @@ public class PlayerInput : BaseInput
     public override event Action<Vector2> OnViewDirection;
 
     public override event Action<bool> OnClick;
+    public override event Action OnSpectialClick;
 
     void Update()
     {
@@ -32,6 +33,11 @@ public class PlayerInput : BaseInput
         if (Input.GetKey(KeyCode.W))
         {
             moveDir += Vector2.up;
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            OnSpectialClick?.Invoke();
         }
 
         var dir = Input.mousePosition - Camera.main.WorldToScreenPoint(player.transform.position);

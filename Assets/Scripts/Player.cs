@@ -24,7 +24,7 @@ public class Player : MonoBehaviour, IDamage
     private Transform HandPosition;
 
     [SerializeField]
-    private Bullet BulletOrigin;
+    private GrenadeWeapon GrenadeOrigin;
 
     [SerializeField]
     private Animator animator;
@@ -73,6 +73,7 @@ public class Player : MonoBehaviour, IDamage
         playerInput.OnMoveDirection += PlayerInput_OnMoveDirection;
         playerInput.OnViewDirection += PlayerInput_OnViewDirection;
         playerInput.OnClick += PlayerInput_OnClick;
+        playerInput.OnSpectialClick += PlayerInput_OnSpectialClick;
 
         HP.onNotifyDelta += HP_onNotifyDelta;
         LoveGauge.onNotifyDelta += LoveGauge_onNotifyDelta;
@@ -249,7 +250,15 @@ public class Player : MonoBehaviour, IDamage
             ShotRoutine = StartCoroutine(CurrentWeapon.Fire(ViewDir, () => ShotRoutine = null));
         }
     }
-    
+
+    private void PlayerInput_OnSpectialClick()
+    {
+        var obj = PoolManager.SpawnObject(GrenadeOrigin.gameObject);
+        var grenade = CacheManager.Get<GrenadeWeapon>(obj);
+        grenade.transform.position = transform.position + Vector3.up;
+        grenade.Initialize(ViewDir, gameObject);
+    }
+
     private void PlayerInput_OnViewDirection(Vector2 obj)
     {
         if(!isControllable)
