@@ -4,6 +4,8 @@ using System;
 
 public class DefaultWeapon : BaseWeapon
 {
+    [SerializeField]
+    private AudioSource source;
     public override float ReChargeCoolDown { get => DefaultReChargeCoolDown; }
     public override float CoolDown { get => DefaultCoolDown; }
 
@@ -20,6 +22,7 @@ public class DefaultWeapon : BaseWeapon
         dir = dir.normalized + new Vector3(UnityEngine.Random.Range(-0.1f, 0.1f), 0, UnityEngine.Random.Range(-0.1f, 0.1f));
         bullet.Initialize(StartPosition.position, new Vector3(dir.x, 0, dir.y), Damage, Owner);
         Effect.Play();
+        source.Play();
 
         Capacity.value -= 1;
 

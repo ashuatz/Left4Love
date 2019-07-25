@@ -103,7 +103,7 @@ public class Player : MonoBehaviour, IDamage
 
             var dir = (LastAttacker.transform.position - transform.position).normalized;
             MoveDir = new Vector2(dir.x, dir.z);
-            StartCoroutine(Timer(1f, () => { isControllable = true; MoveDir = Vector2.zero; }));
+            StartCoroutine(Timer(1f, () => { isControllable = true; MoveDir = Vector2.zero; LoveGauge.value = 0; }));
         }
     }
 

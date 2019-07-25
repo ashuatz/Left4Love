@@ -50,6 +50,7 @@ namespace Zombi
         [SerializeField] private Collider m_Collider;
         [SerializeField] private BodyPartObjStruct m_FrontObj;
         [SerializeField] private ParticleSystem[] m_OwnerChangePar;
+        [SerializeField] private AudioSource m_AudioSource;
 
         [Header("Sprite")]
         [SerializeField] private BodyPartSprStruct[] m_FrontSpr;
@@ -199,6 +200,7 @@ namespace Zombi
                     m_SlowTimer = m_SlowTime;
                     m_Agent.speed *= 0.5f;
                     m_OwnerChangePar[GetOwnerIndex(attacker)].Play();
+                    m_AudioSource.Play();
                 }
             }
         }

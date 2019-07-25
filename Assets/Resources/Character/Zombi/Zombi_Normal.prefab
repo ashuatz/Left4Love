@@ -9766,6 +9766,7 @@ GameObject:
   - component: {fileID: 1708167830150170388}
   - component: {fileID: 1708167830150170387}
   - component: {fileID: 3372232410115919046}
+  - component: {fileID: 5010122692902475286}
   m_Layer: 0
   m_Name: Zombi_Normal
   m_TagString: Untagged
@@ -9824,6 +9825,7 @@ MonoBehaviour:
   - {fileID: 4166588565238097903}
   - {fileID: 740465687156256553}
   - {fileID: 2994192119546507496}
+  m_AudioSource: {fileID: 5010122692902475286}
   m_FrontSpr:
   - body: {fileID: 21300000, guid: 1d44ba5200dfd1641a525f550510011c, type: 3}
     hand: {fileID: 21300000, guid: 41219167af115e642a1577bf2914a0a4, type: 3}
@@ -9944,6 +9946,102 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
+--- !u!82 &5010122692902475286
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1708167830150170391}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 26d02963c8fca234d8001ba38ada52b6, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 10
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &2245634200209315524
 GameObject:
   m_ObjectHideFlags: 0
@@ -25137,6 +25235,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BeamUpRed
       objectReference: {fileID: 0}
+    - target: {fileID: 198603758905165296, guid: 2bd0d19221fc22f4cb83585525307184,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4935848419471410, guid: 2bd0d19221fc22f4cb83585525307184, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -25193,11 +25296,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.5
       objectReference: {fileID: 0}
-    - target: {fileID: 198603758905165296, guid: 2bd0d19221fc22f4cb83585525307184,
-        type: 3}
-      propertyPath: playOnAwake
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 198464684819553672, guid: 2bd0d19221fc22f4cb83585525307184,
         type: 3}
       propertyPath: playOnAwake
@@ -25232,6 +25330,11 @@ PrefabInstance:
     - target: {fileID: 1663028720472886, guid: 25de2e79eeec68e4b8770f699c19f734, type: 3}
       propertyPath: m_Name
       value: BeamUpPink
+      objectReference: {fileID: 0}
+    - target: {fileID: 198295916629945458, guid: 25de2e79eeec68e4b8770f699c19f734,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4075979594173880, guid: 25de2e79eeec68e4b8770f699c19f734, type: 3}
       propertyPath: m_LocalPosition.x
@@ -25288,11 +25391,6 @@ PrefabInstance:
     - target: {fileID: 4075979594173880, guid: 25de2e79eeec68e4b8770f699c19f734, type: 3}
       propertyPath: m_LocalScale.z
       value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 198295916629945458, guid: 25de2e79eeec68e4b8770f699c19f734,
-        type: 3}
-      propertyPath: playOnAwake
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 198362643478528384, guid: 25de2e79eeec68e4b8770f699c19f734,
         type: 3}
