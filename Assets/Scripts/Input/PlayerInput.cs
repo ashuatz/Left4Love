@@ -35,6 +35,13 @@ public class PlayerInput : BaseInput
         }
 
         var dir = Input.mousePosition - Camera.main.WorldToScreenPoint(player.transform.position);
+        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out var hit))
+        {
+            var temp = (hit.point + Vector3.up * 0.5f) - player.transform.position;
+            dir = new Vector2(temp.x, temp.z);
+        }
+
         OnViewDirection?.Invoke(new Vector2(dir.x, dir.y));
         OnMoveDirection?.Invoke(moveDir);
 
