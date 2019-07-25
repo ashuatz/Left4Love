@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Core;
+using UnityEngine.AI;
 
 namespace Zombi
 {
@@ -22,11 +24,14 @@ namespace Zombi
         #endregion
 
         #region Inspector
+        [Header("Component")]
+        [SerializeField] private NavMeshAgent m_Agent;
+
         [Header("Balance")]
         [SerializeField] private int m_MaxHP;                   //체력
         [SerializeField] private int m_Damage;                  //공격력
+        [SerializeField] private float m_Speed;                 //이동속도
         [SerializeField] private float m_ZombiSearchDist;       //다른 적 좀비를 검색하는 거리
-        [SerializeField] private float m_ZombiTime;             //좀비 지속시간
         #endregion
         #region Get,Set
         public GameObject ownerPlayer
@@ -71,6 +76,8 @@ namespace Zombi
 
         private Action[] m_StateUpdate;                         //각 State의 Update
         private StateNextEvent[] m_StateNext;                   //각 State의 다음으로 넘어가는 조건
+
+        private SubjectValue<int> m_HP;                         //몬스터 HP
         #endregion
 
         #region Event
@@ -79,6 +86,8 @@ namespace Zombi
             ownerPlayer = owner;
             m_StateUpdate = new Action[] { StateSpawning, StateIdle, StateMove, StateAttack, StateLove, StateDie };
             m_StateNext = new StateNextEvent[] { StateSpawningNext, StateIdleNext, StateMoveNext, StateAttackNext, StateLoveNext, StateDieNext };
+
+            m_HP.value = m_MaxHP;
         }
 
         //Unity Evnet
@@ -87,14 +96,19 @@ namespace Zombi
             SetState(m_StateNext[(int)zombiState]());
             m_StateUpdate[(int)zombiState]();
         }
-        private void OnDrawGizmosSelected()
+        private void OnCollisionStay(Collision collision)
         {
+            
         }
 
         //IDamage
         public void Damage(int damage)
         {
-
+            m_HP.value = Mathf.Max(m_HP.value - damage, 0);
+        }
+        public void Heal(int amount)
+        {
+            m_HP.value = Mathf.Min(m_HP.value + amount, m_MaxHP);
         }
         #endregion
         #region State
@@ -122,7 +136,7 @@ namespace Zombi
             Transform target = UpdateMoveTarget();
             if (target)
             {
-
+                m_Agent.SetDestination(target.position);
             }
         }
         private ZombiState StateMoveNext()
@@ -195,10 +209,6 @@ namespace Zombi
                 if(state != ZombiState.Attack && state != ZombiState.Move)
                     SetTargetZombi(null);
             }
-        }
-        private void Move(Vector3 vector)
-        {
-
         }
 
         //Private Util
@@ -274,11 +284,6 @@ namespace Zombi
             float addScore = target.Priority;
 
             return dist + addScore;
-        }
-
-        public void Heal(int amount)
-        {
-            throw new NotImplementedException();
         }
         #endregion
     }
