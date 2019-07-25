@@ -10,4 +10,5 @@ public class BaseInput : MonoBehaviour
     public virtual event Action<Vector2> OnViewDirection;
 
     public virtual event Action<bool> OnClick;
+    public virtual event Action OnSpectialClick;
 }
