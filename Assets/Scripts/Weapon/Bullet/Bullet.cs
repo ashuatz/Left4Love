@@ -19,7 +19,7 @@ public class Bullet : BaseBullet
             ZombiCharacter zombi = other.attachedRigidbody.GetComponent<ZombiCharacter>();
             if (zombi != null && zombi.ownerPlayer != Owner)
             {
-                zombi.Damage(Damage);
+                zombi.Damage(Damage, Owner);
                 PoolManager.ReleaseObject(gameObject);
             }
             else if (zombi != null)

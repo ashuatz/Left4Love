@@ -18,6 +18,8 @@ public abstract class BaseWeapon : MonoBehaviour
     protected float BulletAliveTime;
     [SerializeField]
     protected int DefaultDamage;
+    [SerializeField]
+    protected Transform StartPosition;
     
     public virtual float CoolDown { get; protected set; }
     public virtual float ReChargeCoolDown { get; protected set; }
@@ -27,5 +29,5 @@ public abstract class BaseWeapon : MonoBehaviour
     public virtual GameObject Owner { get; protected set; }
 
     public abstract void Initialize(GameObject Owner);
-    public abstract IEnumerator Fire(Vector3 pos, Vector3 dir, Action onComplete);
+    public abstract IEnumerator Fire(Vector3 dir, Action onComplete);
 }

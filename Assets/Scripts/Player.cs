@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Core;
+using Zombi;
 
 public class Player : MonoBehaviour, IDamage
 {
@@ -21,10 +23,7 @@ public class Player : MonoBehaviour, IDamage
 
     [SerializeField]
     private Bullet BulletOrigin;
-
-    [SerializeField]
-    private CollisionRiser detector;
-
+    
     [SerializeField]
     private float DefaultShotCoolDown;
     private float ShotCoolDown;
@@ -33,15 +32,15 @@ public class Player : MonoBehaviour, IDamage
     private bool Attackable;
     private bool isInvincibility;
     private bool isControllable;
-    private bool isMoveable;
-
-    private float HP;
-    private float LoveGauge;
     
+    private SubjectValue<float> HP = new SubjectValue<float>(1000);
+    
+    private SubjectValue<float> LoveGauge = new SubjectValue<float>(0);
+
     public Vector2 MoveDir { get; private set; }
     public Vector2 ViewDir { get; private set; }
 
-    public bool IsDied => HP <= 0;
+    public bool IsDied => HP.value <= 0;
 
     public bool IsDamageEnable => !isInvincibility;
     public bool IsHealEnable => true;
@@ -49,19 +48,50 @@ public class Player : MonoBehaviour, IDamage
     public BaseWeapon CurrentWeapon;
     private Coroutine ShotRoutine;
 
+    private Player LastAttacker = null;
+
     private void Awake()
     {
         SetWeapon();
         Attackable = true;
         isInvincibility = false;
         isControllable = true;
-        isMoveable = true;
 
         playerInput.OnMoveDirection += PlayerInput_OnMoveDirection;
         playerInput.OnViewDirection += PlayerInput_OnViewDirection;
         playerInput.OnClick += PlayerInput_OnClick;
 
-        detector.OnTriggerEnterRiser += Detector_OnTriggerEnterRiser;
+        HP.onNotifyDelta += HP_onNotifyDelta;
+        LoveGauge.onNotifyDelta += LoveGauge_onNotifyDelta;
+    }
+
+    private void LoveGauge_onNotifyDelta(float last, float current)
+    {
+        var delta = current - last;
+        if(current >= 10)
+        {
+            //cc
+            isControllable = false;
+
+            var dir = (transform.position - LastAttacker.transform.position);
+            MoveDir = new Vector2(dir.x, dir.z);
+            StartCoroutine(Timer(2f, () => isControllable = true));
+        }
+    }
+
+    private void HP_onNotifyDelta(float last, float current)
+    {
+        var delta = current - last;
+        if(delta < 0)
+        {
+            isInvincibility = true;
+            StartCoroutine(Timer(1f, () => isInvincibility = false));
+        }
+        if(current <= 0)
+        {
+            //dead
+            Debug.Log("TODO : DEAD");
+        }
     }
 
     public void SetWeapon()
@@ -70,26 +100,45 @@ public class Player : MonoBehaviour, IDamage
         CurrentWeapon.transform.localPosition = Vector3.zero;
         CurrentWeapon.transform.localRotation = Quaternion.identity;
     }
-
-    private void Detector_OnTriggerEnterRiser(Collider obj)
+    
+    private IEnumerator Timer(float t, Action onComplete)
     {
-        var bullet = obj.GetComponent<Bullet>();
-        if (bullet != null)
-        {
-            //reduce HP;
-        }
+        yield return new WaitForSeconds(t);
+        onComplete?.Invoke();
     }
 
-    public void Damage(int damage)
+    public void Damage(int damage, GameObject attacker)
     {
-        HP -= damage;
+        //Player Attack
+        var player = attacker.GetComponent<Player>();
+        if (player != null)
+        {
+            LoveGauge.value += damage;
+            LastAttacker = player;
+        }
+        var zombi = attacker.GetComponent<ZombiCharacter>();
+        if (zombi != null)
+        {
+            HP.value -= damage;
+        }
     }
 
     public void Heal(int amount)
     {
-        HP += amount;
+        HP.value += amount;
     }
 
+    private void Update()
+    {
+        move();
+    }
+
+    private void move()
+    {
+        rigidbody.velocity = new Vector3(MoveDir.x, 0, MoveDir.y) * MovementSpeed;
+    }
+
+    //input
     private void PlayerInput_OnClick(bool isPressed)
     {
         if (!isControllable || !Attackable)
@@ -97,7 +146,7 @@ public class Player : MonoBehaviour, IDamage
         
         if (isPressed && ShotRoutine == null)
         {
-            ShotRoutine = StartCoroutine(CurrentWeapon.Fire(HandPosition.position, ViewDir, () => ShotRoutine = null));
+            ShotRoutine = StartCoroutine(CurrentWeapon.Fire(ViewDir, () => ShotRoutine = null));
         }
     }
     
@@ -114,23 +163,10 @@ public class Player : MonoBehaviour, IDamage
 
     private void PlayerInput_OnMoveDirection(Vector2 obj)
     {
-        if (!isMoveable || !isControllable)
-        {
-            MoveDir = Vector2.zero;
+        if (!isControllable)
             return;
-        }
 
         MoveDir = obj;
     }
-
-    private void Update()
-    {
-        move();
-    }
-
-    private void move()
-    {
-        rigidbody.velocity = new Vector3(MoveDir.x, 0, MoveDir.y) * MovementSpeed;
-    }
-
+    
 }

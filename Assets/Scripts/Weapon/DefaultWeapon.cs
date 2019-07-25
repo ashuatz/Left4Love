@@ -13,11 +13,11 @@ public class DefaultWeapon : BaseWeapon
         Capacity = DefaultCapacity;
     }
 
-    public override IEnumerator Fire(Vector3 pos, Vector3 dir,Action onComplete)
+    public override IEnumerator Fire(Vector3 dir, Action onComplete)
     {
         var obj = PoolManager.SpawnObject(bulletOrigin);
         var bullet = CacheManager.Get<Bullet>(obj);
-        bullet.Initialize(pos, new Vector3(dir.x, 0, dir.y), Damage, Owner);
+        bullet.Initialize(StartPosition.position, new Vector3(dir.x, 0, dir.y), Damage, Owner);
 
         Capacity -= 1;
         if (Capacity <= 0)

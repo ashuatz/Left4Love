@@ -84,15 +84,15 @@ namespace Zombi
         //Unity Evnet
         private void Update()
         {
-            SetState(m_StateNext[(int)zombiState]());
-            m_StateUpdate[(int)zombiState]();
+            //SetState(m_StateNext[(int)zombiState]());
+            //m_StateUpdate[(int)zombiState]();
         }
         private void OnDrawGizmosSelected()
         {
         }
 
         //IDamage
-        public void Damage(int damage)
+        public void Damage(int damage, GameObject attacker)
         {
 
         }
