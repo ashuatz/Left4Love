@@ -159,6 +159,7 @@ public class Player : MonoBehaviour, IDamage
         var angle = Mathf.Atan2(obj.y, obj.x) * Mathf.Rad2Deg;
 
         HandPivot.localRotation = Quaternion.AngleAxis(-angle, Vector3.up);
+        CurrentWeapon?.Rotate(ViewDir);
     }
 
     private void PlayerInput_OnMoveDirection(Vector2 obj)

@@ -20,6 +20,9 @@ public abstract class BaseWeapon : MonoBehaviour
     protected int DefaultDamage;
     [SerializeField]
     protected Transform StartPosition;
+
+    [SerializeField]
+    protected Transform GunTransform;
     
     public virtual float CoolDown { get; protected set; }
     public virtual float ReChargeCoolDown { get; protected set; }
@@ -28,6 +31,7 @@ public abstract class BaseWeapon : MonoBehaviour
 
     public virtual GameObject Owner { get; protected set; }
 
+    public abstract void Rotate(Vector2 dir);
     public abstract void Initialize(GameObject Owner);
     public abstract IEnumerator Fire(Vector3 dir, Action onComplete);
 }
