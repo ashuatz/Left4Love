@@ -50,7 +50,7 @@ public class Bullet : BaseBullet
                 zombi.Heal(HealAmount);
             }
         }
-        if (other.name.Equals("map"))
+        if (other.name.Contains("map"))
         {
             PoolManager.ReleaseObject(gameObject);
         }
