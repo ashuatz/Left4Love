@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDamage
 {
+
     [SerializeField]
     private Rigidbody rigidbody;
     [SerializeField]
@@ -27,9 +28,23 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float DefaultShotCoolDown;
     private float ShotCoolDown;
-        
+
+    //State
+    private bool Attackable;
+    private bool isInvincibility;
+    private bool isControllable;
+    private bool isMoveable;
+
+    private float HP;
+    private float LoveGauge;
+    
     public Vector2 MoveDir { get; private set; }
     public Vector2 ViewDir { get; private set; }
+
+    public bool IsDied => HP <= 0;
+
+    public bool IsDamageEnable => !isInvincibility;
+    public bool IsHealEnable => true;
 
     public BaseWeapon CurrentWeapon;
     private Coroutine ShotRoutine;
@@ -37,6 +52,10 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         SetWeapon();
+        Attackable = true;
+        isInvincibility = false;
+        isControllable = true;
+        isMoveable = true;
 
         playerInput.OnMoveDirection += PlayerInput_OnMoveDirection;
         playerInput.OnViewDirection += PlayerInput_OnViewDirection;
@@ -61,17 +80,32 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void Damage(int damage)
+    {
+        HP -= damage;
+    }
+
+    public void Heal(int amount)
+    {
+        HP += amount;
+    }
+
     private void PlayerInput_OnClick(bool isPressed)
     {
+        if (!isControllable || !Attackable)
+            return;
+        
         if (isPressed && ShotRoutine == null)
         {
             ShotRoutine = StartCoroutine(CurrentWeapon.Fire(HandPosition.position, ViewDir, () => ShotRoutine = null));
         }
     }
-
-
+    
     private void PlayerInput_OnViewDirection(Vector2 obj)
     {
+        if(!isControllable)
+            return;
+
         ViewDir = obj;
         var angle = Mathf.Atan2(obj.y, obj.x) * Mathf.Rad2Deg;
 
@@ -80,6 +114,12 @@ public class Player : MonoBehaviour
 
     private void PlayerInput_OnMoveDirection(Vector2 obj)
     {
+        if (!isMoveable || !isControllable)
+        {
+            MoveDir = Vector2.zero;
+            return;
+        }
+
         MoveDir = obj;
     }
 

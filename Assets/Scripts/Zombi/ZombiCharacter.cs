@@ -62,6 +62,8 @@ namespace Zombi
             get;
             set;
         }
+
+        public bool IsHealEnable => throw new NotImplementedException();
         #endregion
         #region Value
         private GameObject m_TargetPlayer;                      //공격 타겟 플레이어
@@ -268,6 +270,11 @@ namespace Zombi
             float addScore = target.Priority;
 
             return dist + addScore;
+        }
+
+        public void Heal(int amount)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }
