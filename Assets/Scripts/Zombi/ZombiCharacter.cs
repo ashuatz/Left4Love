@@ -137,9 +137,12 @@ namespace Zombi
 
             m_Rigidbody.velocity = Vector3.zero;
 
-            bool isRight = (0 <= m_Agent.velocity.x);
-            m_FrontAnimator.transform.localScale = new Vector3(isRight ? 1 : -1, 1, 1);
-            SetSprite(m_SpriteIndex);
+            if (0.1f < m_Agent.velocity.magnitude)
+            {
+                bool isRight = (0 <= m_Agent.velocity.x);
+                m_FrontAnimator.transform.localScale = new Vector3(isRight ? 1 : -1, 1, 1);
+                SetSprite(m_SpriteIndex);
+            }
 
             m_AutoDieTime -= Time.deltaTime;
             if (m_AutoDieTime <= 0)
@@ -179,6 +182,11 @@ namespace Zombi
         public void Damage(int damage, GameObject attacker)
         {
             m_HP.value = Mathf.Max(m_HP.value - damage, 0);
+
+            if(attacker.GetComponent<Player>())
+            {
+                m_TargetPlayer = attacker;
+            }
 
             if (m_HP.value <= 0)
             {

@@ -23,6 +23,10 @@ public class AIInput : BaseInput
     }
     #endregion
     #region Function
+    private Transform GetBaseTargetPos()
+    {
+        return null;
+    }
     /// <summary>
     /// 적을 검색합니다.
     /// </summary>
