@@ -10,12 +10,20 @@ public class Bullet : BaseBullet
     public override void Initialize(Vector3 pos, Vector3 dir, int dmg, GameObject owner)
     {
         isUse = false;
+        var main = Hit.main;
+        main.stopAction = ParticleSystemStopAction.Callback;
+
         transform.position = pos;
         rigid.velocity = dir.normalized * speed;
         HealAmount = Damage = dmg;
         Owner = owner;
-
+        
         StartCoroutine(AutoRelease());
+    }
+
+    private void OnParticleSystemStopped()
+    {
+        PoolManager.ReleaseObject(gameObject);
     }
 
     private IEnumerator AutoRelease()
@@ -28,22 +36,22 @@ public class Bullet : BaseBullet
     {
         if (other.attachedRigidbody && !isUse )
         {
-            Hit.Play();
             isUse = true;
 
             Player player = other.GetComponent<Player>();
             if(player != null && Owner != player)
             {
+                Hit.Play();
                 player.Damage(Damage, Owner);
-
-                //PoolManager.ReleaseObject(gameObject);
+                rigid.velocity = Vector3.zero;
             }
 
             ZombiCharacter zombi = other.attachedRigidbody.GetComponent<ZombiCharacter>();
             if (zombi != null && zombi.ownerPlayer != Owner)
             {
+                Hit.Play();
                 zombi.Damage(Damage, Owner);
-                //PoolManager.ReleaseObject(gameObject);
+                rigid.velocity = Vector3.zero;
             }
             else if (zombi != null)
             {
