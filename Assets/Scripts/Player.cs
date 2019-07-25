@@ -38,7 +38,7 @@ public class Player : MonoBehaviour, IDamage
     private bool isInvincibility;
     private bool isControllable;
 
-    public const float MAXHP = 3;
+    public const float MAXHP = 50;
     public const float MAXLOVEGAUGE = 10;
     public SubjectValue<float> HP = new SubjectValue<float>(3);
     public SubjectValue<float> LoveGauge = new SubjectValue<float>(0);
@@ -121,7 +121,10 @@ public class Player : MonoBehaviour, IDamage
         if (current <= 0)
         {
             //dead
-            Debug.Log("TODO : DEAD");
+            if (!(playerInput is PlayerInput))
+            {
+                Destroy(gameObject);
+            }
         }
     }
 
