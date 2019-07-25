@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Zombi
 {
-    public class Zombi : MonoBehaviour, IDamage
+    public class ZombiCharacter : MonoBehaviour, IDamage
     {
         #region Type
         public enum ZombiState
@@ -16,6 +17,8 @@ namespace Zombi
             Love,
             Die
         }
+
+        private delegate ZombiState StateNextEvent();
         #endregion
 
         #region Inspector
@@ -23,6 +26,7 @@ namespace Zombi
         [SerializeField] private int m_MaxHP;                   //체력
         [SerializeField] private int m_Damage;                  //공격력
         [SerializeField] private float m_ZombiSearchDist;       //다른 적 좀비를 검색하는 거리
+        [SerializeField] private float m_ZombiTime;             //좀비 지속시간
         #endregion
         #region Get,Set
         public ZombiTypeEnum zombiType
@@ -40,7 +44,11 @@ namespace Zombi
         {
             get
             {
-                return (zombiState == ZombiState.Die);
+                bool isNotDied = zombiState == ZombiState.Die;
+                bool isNotLove = zombiState == ZombiState.Love;
+                bool isNotSpawning = zombiState == ZombiState.Spawning;
+
+                return isNotDied & isNotLove & isNotSpawning;
             }
         }
 
@@ -53,46 +61,24 @@ namespace Zombi
         #region Value
         private GameObject m_OwnerPlayer;                       //주인 플레이어
         private GameObject m_TargetPlayer;                      //공격 타겟 플레이어
-        private Zombi m_TargetZombi;                            //공격 타겟 좀비
+        private ZombiCharacter m_TargetZombi;                            //공격 타겟 좀비
+
+        private Action[] m_StateUpdate;                         //각 State의 Update
+        private StateNextEvent[] m_StateNext;                   //각 State의 다음으로 넘어가는 조건
         #endregion
 
         #region Event
         internal void Init(GameObject owner)
         {
-
+            m_StateUpdate = new Action[] { StateSpawning, StateIdle, StateMove, StateAttack, StateLove, StateDie };
+            m_StateNext = new StateNextEvent[] { StateSpawningNext, StateIdleNext, StateMoveNext, StateAttackNext, StateLoveNext, StateDieNext };
         }
 
         //Unity Evnet
         private void Update()
         {
-            if (zombiState == ZombiState.Move)
-            {
-                //현재 State에서의 행동 - 이동 타겟 구하기
-                Transform target = null;
-                if (m_TargetZombi == null)
-                {
-                    
-
-                    target = (m_TargetPlayer ? m_TargetPlayer : m_OwnerPlayer).transform;
-                }
-                if (m_TargetZombi)
-                    target = m_TargetZombi.transform;
-
-                //실제 이동 처리
-                if(target)
-                {
-
-                }
-
-                //다른 State로
-                if (target)
-                {
-
-                }
-                else
-                    SetState(ZombiState.Idle);
-            }
-
+            SetState(m_StateNext[(int)zombiState]());
+            m_StateUpdate[(int)zombiState]();
         }
 
         //IDamage
@@ -101,30 +87,116 @@ namespace Zombi
 
         }
         #endregion
+        #region State
+        //Spawning
+        private void StateSpawning()
+        {
+        }
+        private ZombiState StateSpawningNext()
+        {
+            return ZombiState.Spawning;
+        }
+
+        //Idle
+        private void StateIdle()
+        {
+        }
+        private ZombiState StateIdleNext()
+        {
+            return ZombiState.Idle;
+        }
+
+        //Move
+        private void StateMove()
+        {
+            Transform target = UpdateMoveTarget();
+            if (target)
+            {
+
+            }
+        }
+        private ZombiState StateMoveNext()
+        {
+            Transform target = UpdateMoveTarget();
+            if (target)
+                return ZombiState.Move;
+            else
+                return ZombiState.Idle;
+        }
+        private Transform UpdateMoveTarget()
+        {
+            //공격할 좀비가 없을 경우 공격할 좀비를 설정한다 (물론 이 코드 이후에도 없을수도 있다)
+            if (m_TargetZombi == null)
+                SetTargetZombi(GetNextAttackZombi());
+
+            //이동 타겟 구하기
+            Transform target = null;
+            if (m_TargetZombi)
+                target = m_TargetZombi.transform;
+            else
+                target = (m_TargetPlayer ? m_TargetPlayer : m_OwnerPlayer).transform;
+
+            return target;
+        }
+
+        //Attack
+        private void StateAttack()
+        {
+        }
+        private ZombiState StateAttackNext()
+        {
+            return ZombiState.Attack;
+        }
+
+        //Love
+        private void StateLove()
+        {
+        }
+        private ZombiState StateLoveNext()
+        {
+            return ZombiState.Love;
+        }
+
+        //Die
+        private void StateDie()
+        {
+        }
+        private ZombiState StateDieNext()
+        {
+            return ZombiState.Die;
+        }
+        #endregion
         #region Function
+        //Private
         /// <summary>
         /// 상태를 설정한다.
         /// </summary>
         /// <param name="state">상태</param>
         private void SetState(ZombiState state)
         {
+            //State 변경
             ZombiState oldState = zombiState;
             zombiState = state;
 
             //State 변경시의 추가 처리
             if(oldState != state)
             {
+                //Attack이나 이동이 아닌 경우는 다른 좀비를 타겟으로 하지 않는다.
                 if(state != ZombiState.Attack && state != ZombiState.Move)
-                {
                     SetTargetZombi(null);
-                }
             }
         }
+        private void Move(Vector3 vector)
+        {
+
+        }
+
+        //Private Util
         /// <summary>
         /// (좀비) 타겟을 설정한다.
         /// </summary>
         /// <param name="target">타겟</param>
-        private void SetTargetZombi(Zombi target)
+        private void SetTargetZombi(ZombiCharacter target)
         {
             if (m_TargetZombi)
                 m_TargetZombi.Priority -= 1;
@@ -138,20 +210,20 @@ namespace Zombi
         /// 다음번으로 공격할 좀비를 구한다.
         /// </summary>
         /// <returns></returns>
-        private Zombi GetNextAttackZombi()
+        private ZombiCharacter GetNextAttackZombi()
         {
             //사용할것들
             ZombiManager zombiManager = ZombiManager.Instance;
 
             //주인이 같지 않은 모든 좀비를 순회해서 공격 가능한지 구한다.
             List<GameObject> ownerList = zombiManager.GetOwnerList();
-            Zombi nextZombi = null;
+            ZombiCharacter nextZombi = null;
             float nextZombiPriority = float.MaxValue;
             for (int i = 0; i < ownerList.Count; ++i)
             {
                 if (ownerList[i] != m_OwnerPlayer)
                 {
-                    List<Zombi> zombiList = zombiManager.GetSpawnedZombiList(ownerList[i]);
+                    List<ZombiCharacter> zombiList = zombiManager.GetSpawnedZombiList(ownerList[i]);
                     for (int j = 0; j < zombiList.Count; ++j)
                     {
                         //좀비의 우선순위 / 공격가능을 구한다.
@@ -175,21 +247,18 @@ namespace Zombi
         /// </summary>
         /// <param name="target">타겟</param>
         /// <returns></returns>
-        private bool GetAttackEnable(Zombi target)
+        private bool GetAttackEnable(ZombiCharacter target)
         {
             bool isDistEnable = Vector3.Distance(transform.position, target.transform.position) <= m_ZombiSearchDist;
-            bool isNotDied = target.zombiState == ZombiState.Die;
-            bool isNotLove = target.zombiState == ZombiState.Love;
-            bool isNotSpawning = target.zombiState == ZombiState.Spawning;
 
-            return isDistEnable & isNotDied & isNotLove & isNotSpawning;
+            return isDistEnable & target.IsDamageEnable;
         }
         /// <summary>
         /// 공격 우선순위 점수를 구한다. (낮을수록 공격 우선순위가 높다.)
         /// </summary>
         /// <param name="target">공격 타겟(후보)</param>
         /// <returns></returns>
-        private float GetAttackPriority(Zombi target)
+        private float GetAttackPriority(ZombiCharacter target)
         {
             float dist = Vector3.Distance(transform.position, target.transform.position);
             float addScore = target.Priority;

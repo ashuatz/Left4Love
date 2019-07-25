@@ -13,7 +13,7 @@ namespace Zombi
         #endregion
         #region Value
         private List<GameObject> m_Player = new List<GameObject>();
-        private Dictionary<GameObject, List<Zombi>> m_SpawnedZombi = new Dictionary<GameObject, List<Zombi>>();
+        private Dictionary<GameObject, List<ZombiCharacter>> m_SpawnedZombi = new Dictionary<GameObject, List<ZombiCharacter>>();
         #endregion
 
         #region Event
@@ -42,7 +42,7 @@ namespace Zombi
         /// </summary>
         /// <param name="owner">어디 소속의 좀비를 가져올지</param>
         /// <returns></returns>
-        public List<Zombi> GetSpawnedZombiList(GameObject owner)
+        public List<ZombiCharacter> GetSpawnedZombiList(GameObject owner)
         {
             return GetZombiPool(owner);
         }
@@ -50,25 +50,25 @@ namespace Zombi
         /// 좀비를 생성합니다.
         /// </summary>
         /// <param name="owner">해당 좀비의 주인</param>
-        public Zombi SpawnZombi(GameObject owner, Transform targetPos, ZombiTypeEnum type)
+        public ZombiCharacter SpawnZombi(GameObject owner, Transform targetPos, ZombiTypeEnum type)
         {
             GameObject go = Instantiate(m_ZombiPrefab[(int)type], targetPos.position, Quaternion.identity);
-            Zombi zombi = go.GetComponent<Zombi>();
+            ZombiCharacter zombi = go.GetComponent<ZombiCharacter>();
             zombi.Init(owner);
 
-            List<Zombi> pool = GetZombiPool(owner);
+            List<ZombiCharacter> pool = GetZombiPool(owner);
             pool.Add(zombi);
 
             return zombi;
         }
         #endregion
         #region Function
-        private List<Zombi> GetZombiPool(GameObject owner)
+        private List<ZombiCharacter> GetZombiPool(GameObject owner)
         {
-            List<Zombi> zombiPool;
+            List<ZombiCharacter> zombiPool;
             if (!m_SpawnedZombi.TryGetValue(owner, out zombiPool))
             {
-                zombiPool = new List<Zombi>();
+                zombiPool = new List<ZombiCharacter>();
                 m_SpawnedZombi.Add(owner, zombiPool);
                 m_Player.Add(owner);
             }
