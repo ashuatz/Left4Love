@@ -548,6 +548,18 @@ namespace Zombi
         /// <returns></returns>
         private int GetOwnerIndex(GameObject owner)
         {
+            if (owner.name == "Player")
+                return 0;
+            if (owner.name == "Player (1)")
+                return 1;
+            if (owner.name == "Player (2)")
+                return 2;
+            if (owner.name == "Player (3)")
+                return 3;
+            else
+                return 4;
+
+
             List<GameObject> ownerList = ZombiManager.Instance.GetPlayerOwnerList();
             if (owner.GetComponent<Player>())
             {

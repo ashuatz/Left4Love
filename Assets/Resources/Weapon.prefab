@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletOrigin: {fileID: 6136162535097160770, guid: 26d27cfa2f737274799a222775807b44,
     type: 3}
-  bulletSpeed: 15
+  bulletSpeed: 10
   DefaultCoolDown: 0.06
   DefaultReChargeCoolDown: 0.7
   DefaultCapacity: 22
@@ -208,6 +208,41 @@ PrefabInstance:
       propertyPath: m_Name
       value: LaserMuzzlePink
       objectReference: {fileID: 0}
+    - target: {fileID: 198615569370431134, guid: c89c358a5c304e348819a9705a2cf82f,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 198615569370431134, guid: c89c358a5c304e348819a9705a2cf82f,
+        type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198615569370431134, guid: c89c358a5c304e348819a9705a2cf82f,
+        type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 198615569370431134, guid: c89c358a5c304e348819a9705a2cf82f,
+        type: 3}
+      propertyPath: ShapeModule.angle
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 198615569370431134, guid: c89c358a5c304e348819a9705a2cf82f,
+        type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 198615569370431134, guid: c89c358a5c304e348819a9705a2cf82f,
+        type: 3}
+      propertyPath: InitialModule.startSize.minScalar
+      value: 0.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 198615569370431134, guid: c89c358a5c304e348819a9705a2cf82f,
+        type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 0.16
+      objectReference: {fileID: 0}
     - target: {fileID: 4364126569624408, guid: c89c358a5c304e348819a9705a2cf82f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -251,41 +286,6 @@ PrefabInstance:
     - target: {fileID: 4364126569624408, guid: c89c358a5c304e348819a9705a2cf82f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90.00001
-      objectReference: {fileID: 0}
-    - target: {fileID: 198615569370431134, guid: c89c358a5c304e348819a9705a2cf82f,
-        type: 3}
-      propertyPath: playOnAwake
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 198615569370431134, guid: c89c358a5c304e348819a9705a2cf82f,
-        type: 3}
-      propertyPath: moveWithTransform
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 198615569370431134, guid: c89c358a5c304e348819a9705a2cf82f,
-        type: 3}
-      propertyPath: looping
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 198615569370431134, guid: c89c358a5c304e348819a9705a2cf82f,
-        type: 3}
-      propertyPath: ShapeModule.angle
-      value: 45
-      objectReference: {fileID: 0}
-    - target: {fileID: 198615569370431134, guid: c89c358a5c304e348819a9705a2cf82f,
-        type: 3}
-      propertyPath: InitialModule.startSpeed.scalar
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 198615569370431134, guid: c89c358a5c304e348819a9705a2cf82f,
-        type: 3}
-      propertyPath: InitialModule.startSize.minScalar
-      value: 0.08
-      objectReference: {fileID: 0}
-    - target: {fileID: 198615569370431134, guid: c89c358a5c304e348819a9705a2cf82f,
-        type: 3}
-      propertyPath: InitialModule.startSize.scalar
-      value: 0.16
       objectReference: {fileID: 0}
     - target: {fileID: 198522180930764006, guid: c89c358a5c304e348819a9705a2cf82f,
         type: 3}

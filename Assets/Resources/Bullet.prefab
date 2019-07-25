@@ -33836,7 +33836,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigid: {fileID: 6136162535097160773}
-  speed: 17
+  speed: 10
   Hit: {fileID: 4547967319092689911}
 --- !u!54 &6136162535097160773
 Rigidbody:
