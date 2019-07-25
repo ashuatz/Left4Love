@@ -17,6 +17,7 @@ public class PosMake : MonoSingleton<PosMake>
         List<Transform> posList = new List<Transform>(transform.childCount);
         for (int i = 0; i < posList.Capacity; ++i)
             posList.Add(transform.GetChild(i));
+        m_Pos = posList.ToArray();
     }
     #endregion
     #region Function
