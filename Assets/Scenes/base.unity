@@ -218,7 +218,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b8c96e2cdc154e848a3d9fe62464d42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CameraTargets: []
+  CameraTargets:
+  - TargetTransform: {fileID: 554532535}
+    TargetInfluenceH: 1
+    TargetInfluenceV: 1
+    TargetOffset: {x: 0, y: -20}
   CenterTargetOnStart: 0
   Axis: 1
   UpdateType: 1
@@ -323,6 +327,12 @@ Transform:
   m_Father: {fileID: 1259339929}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &554532535 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7443618724013763002, guid: 58bab9bf651f4fc4db708d72e2cf491a,
+    type: 3}
+  m_PrefabInstance: {fileID: 7443618723702734691}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &786214591
 GameObject:
   m_ObjectHideFlags: 0
@@ -925,6 +935,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Zombi_Normal
       objectReference: {fileID: 0}
+    - target: {fileID: 1708167830150170391, guid: fb1b682ea598e124ba22108c1f69051a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1708167830150170389, guid: fb1b682ea598e124ba22108c1f69051a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -994,16 +1009,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 7443618724617065162, guid: 58bab9bf651f4fc4db708d72e2cf491a,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.25881907
-      objectReference: {fileID: 0}
-    - target: {fileID: 7443618724617065162, guid: 58bab9bf651f4fc4db708d72e2cf491a,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.96592575
-      objectReference: {fileID: 0}
     - target: {fileID: 7443618724013763002, guid: 58bab9bf651f4fc4db708d72e2cf491a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1059,6 +1064,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7443618724013762997, guid: 58bab9bf651f4fc4db708d72e2cf491a,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6070268145718135616, guid: 58bab9bf651f4fc4db708d72e2cf491a,
         type: 3}
       propertyPath: m_LocalRotation.x
@@ -1099,10 +1109,15 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0.014
       objectReference: {fileID: 0}
-    - target: {fileID: 7443618724013762997, guid: 58bab9bf651f4fc4db708d72e2cf491a,
+    - target: {fileID: 7443618724617065162, guid: 58bab9bf651f4fc4db708d72e2cf491a,
         type: 3}
-      propertyPath: m_IsTrigger
-      value: 0
+      propertyPath: m_LocalRotation.x
+      value: 0.25881907
+      objectReference: {fileID: 0}
+    - target: {fileID: 7443618724617065162, guid: 58bab9bf651f4fc4db708d72e2cf491a,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.96592575
       objectReference: {fileID: 0}
     - target: {fileID: 7443618723687537344, guid: 58bab9bf651f4fc4db708d72e2cf491a,
         type: 3}
