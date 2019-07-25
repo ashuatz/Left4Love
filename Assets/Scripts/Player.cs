@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Core;
 using Zombi;
+using Com.LuisPedroFonseca.ProCamera2D;
 
 public class Player : MonoBehaviour, IDamage
 {
@@ -50,11 +51,17 @@ public class Player : MonoBehaviour, IDamage
 
     public BaseWeapon CurrentWeapon;
     private Coroutine ShotRoutine;
+    private Coroutine HitGradientRoutine;
 
     private Player LastAttacker = null;
-    
+
+    [SerializeField]
+    private Gradient HitGradient;
+
     [SerializeField]
     private List<PlayerSpritePart> PlayerParts = new List<PlayerSpritePart>();
+
+    public event Action<BaseWeapon> OnWeaponChanged;
 
     private void Awake()
     {
@@ -91,7 +98,9 @@ public class Player : MonoBehaviour, IDamage
         if(delta < 0)
         {
             isInvincibility = true;
+            ProCamera2DShake.Instance.Shake(0);
             StartCoroutine(Timer(1f, () => isInvincibility = false));
+            SetSpriteColor();
         }
         if(current <= 0)
         {
@@ -100,12 +109,14 @@ public class Player : MonoBehaviour, IDamage
         }
     }
 
-    public void SetWeapon()
+    public void SetWeapon(/*baseWeapon Weapon*/)
     {
         CurrentWeapon.transform.SetParent(HandPosition, false);
         CurrentWeapon.transform.localPosition = Vector3.zero;
         CurrentWeapon.transform.localRotation = Quaternion.identity;
         CurrentWeapon.Initialize(gameObject);
+
+        OnWeaponChanged?.Invoke(CurrentWeapon);
     }
     
     private IEnumerator Timer(float t, Action onComplete)
@@ -195,7 +206,33 @@ public class Player : MonoBehaviour, IDamage
             animator.Play("PlayerIdle");
         }
     }
-    
+
+    private void SetSpriteColor()
+    {
+        if (HitGradientRoutine == null)
+            HitGradientRoutine = StartCoroutine(SetSpriteColorInternal(1f));
+    }
+
+    private IEnumerator SetSpriteColorInternal(float time)
+    {
+        float t = 0;
+        while (t < time)
+        {
+            foreach (var part in PlayerParts)
+            {
+                part.setColor(HitGradient.Evaluate(t / time));
+            }
+            t += Time.deltaTime;
+            yield return null;
+        }
+
+        foreach (var part in PlayerParts)
+        {
+            part.setColor(HitGradient.Evaluate(1));
+        }
+        HitGradientRoutine = null;
+    }
+
     //input
     private void PlayerInput_OnClick(bool isPressed)
     {

@@ -36,7 +36,7 @@ public class PlayerInput : BaseInput
 
         var dir = Input.mousePosition - Camera.main.WorldToScreenPoint(player.transform.position);
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out var hit))
+        if (Physics.Raycast(ray, out var hit, 1000f, 1 << LayerMask.NameToLayer("Ground")))
         {
             var temp = (hit.point + Vector3.up * 0.5f) - player.transform.position;
             dir = new Vector2(temp.x, temp.z);
