@@ -4,8 +4,12 @@ using Zombi;
 
 public class Bullet : BaseBullet
 {
+    [SerializeField]
+    private ParticleSystem Hit;
+    private bool isUse = false;
     public override void Initialize(Vector3 pos, Vector3 dir, int dmg, GameObject owner)
     {
+        isUse = false;
         transform.position = pos;
         rigid.velocity = dir.normalized * speed;
         HealAmount = Damage = dmg;
@@ -22,20 +26,24 @@ public class Bullet : BaseBullet
 
     public override void OnTriggerEnter(Collider other)
     {
-        if (other.attachedRigidbody)
+        if (other.attachedRigidbody && !isUse )
         {
+            Hit.Play();
+            isUse = true;
+
             Player player = other.GetComponent<Player>();
             if(player != null && Owner != player)
             {
                 player.Damage(Damage, Owner);
-                PoolManager.ReleaseObject(gameObject);
+
+                //PoolManager.ReleaseObject(gameObject);
             }
 
             ZombiCharacter zombi = other.attachedRigidbody.GetComponent<ZombiCharacter>();
             if (zombi != null && zombi.ownerPlayer != Owner)
             {
                 zombi.Damage(Damage, Owner);
-                PoolManager.ReleaseObject(gameObject);
+                //PoolManager.ReleaseObject(gameObject);
             }
             else if (zombi != null)
             {
