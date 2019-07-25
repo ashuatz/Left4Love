@@ -61,6 +61,15 @@ namespace Zombi
 
             return zombi;
         }
+        /// <summary>
+        /// 좀비를 제거합니다.
+        /// </summary>
+        /// <param name="zombi">제거할 좀비</param>
+        public void DestroyZombi(ZombiCharacter zombi)
+        {
+            GetZombiPool(zombi.ownerPlayer).Remove(zombi);
+            Destroy(zombi.gameObject);
+        }
         #endregion
         #region Function
         private List<ZombiCharacter> GetZombiPool(GameObject owner)

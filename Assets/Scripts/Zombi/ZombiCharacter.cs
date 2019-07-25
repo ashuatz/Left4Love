@@ -27,6 +27,7 @@ namespace Zombi
         [Header("Component")]
         [SerializeField] private NavMeshAgent m_Agent;
         [SerializeField] private Rigidbody m_Rigidbody;
+        [SerializeField] private Animator m_Animator;
 
         [Header("Balance")]
         [SerializeField] private int m_MaxHP;                   //체력
@@ -100,17 +101,53 @@ namespace Zombi
         }
         private void OnCollisionStay(Collision collision)
         {
-            
+            if (!collision.collider.attachedRigidbody)
+                return;
+
+            if (zombiState != ZombiState.Attack)
+            {
+                Player player = collision.collider.attachedRigidbody.GetComponent<Player>();
+                ZombiCharacter zombi = collision.collider.attachedRigidbody.GetComponent<ZombiCharacter>();
+                IDamage iDamage = null;
+                if (player && player.gameObject != ownerPlayer)
+                    iDamage = player;
+                else if (zombi && zombi.ownerPlayer != ownerPlayer)
+                    iDamage = zombi;
+
+                if(iDamage != null)
+                {
+                    iDamage.Damage(m_Damage, gameObject);
+                    SetState(ZombiState.Attack);
+                }
+            }
         }
 
         //IDamage
         public void Damage(int damage, GameObject attacker)
         {
             m_HP.value = Mathf.Max(m_HP.value - damage, 0);
+
+            if (m_HP.value <= 0)
+                SetState(ZombiState.Die);
         }
         public void Heal(int amount)
         {
             m_HP.value = Mathf.Min(m_HP.value + amount, m_MaxHP);
+        }
+
+        //Animation Event
+        public void OnSpawnEnd()
+        {
+            SetState(ZombiState.Idle);
+        }
+        public void OnAttackEnd()
+        {
+            SetState(ZombiState.Idle);
+        }
+        public void OnDieEnd()
+        {
+            ZombiManager zombiManager = ZombiManager.Instance;
+            zombiManager.DestroyZombi(this);
         }
         #endregion
         #region State
@@ -210,6 +247,9 @@ namespace Zombi
                 //Attack이나 이동이 아닌 경우는 다른 좀비를 타겟으로 하지 않는다.
                 if(state != ZombiState.Attack && state != ZombiState.Move)
                     SetTargetZombi(null);
+
+                //변경된 State에 따른 애니메이션 재생
+                m_Animator.SetTrigger(state.ToString());
             }
         }
 
