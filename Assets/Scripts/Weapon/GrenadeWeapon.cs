@@ -43,7 +43,8 @@ public class GrenadeWeapon : MonoBehaviour
 
         effect.Play();
 
-        yield return null;
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
 
         Model.SetActive(false);
         rigid.isKinematic = true;
