@@ -110,6 +110,17 @@ public class SpawnManager : MonoSingleton<SpawnManager>
     }
     #endregion
     #region Function
+    //Public
+    /// <summary>
+    /// 랜덤한 좀비 생성 위치를 가져옵니다.
+    /// </summary>
+    /// <returns></returns>
+    public Transform GetRandomZombiSpawnPos()
+    {
+        return m_ZombiSpawnPos[Random.Range(0, m_ZombiSpawnPos.Length)];
+    }
+
+    //Private
     private int GetRandomIndex(float[] persent)
     {
         float random = Random.Range(0.0f, 100.0f);
