@@ -16,6 +16,11 @@ public class UIPlayerAmmo : MonoBehaviour
     private List<Image> Cells;
     private List<Image> AvailableCells = new List<Image>();
 
+    [SerializeField]
+    private AnimationCurve PositionCurve;
+    [SerializeField]
+    private AnimationCurve ScaleCurve;
+
     private BaseWeapon Weapon;
 
     private void Awake()
@@ -43,7 +48,7 @@ public class UIPlayerAmmo : MonoBehaviour
 
         for (int i = 0; i < AvailableCells.Count; ++i)
         {
-            AvailableCells[i].color = AmmoGradient.Evaluate(i / AvailableCells.Count);
+            AvailableCells[i].color = AmmoGradient.Evaluate((float)i / AvailableCells.Count);
         }
 
         Weapon.Capacity.onNotify += Capacity_onNotify;
@@ -60,8 +65,28 @@ public class UIPlayerAmmo : MonoBehaviour
         }
         else
         {
-            AvailableCells[(int)obj].color = Color.gray;
+            StartCoroutine(CellAnimation(AvailableCells[obj], Weapon.CoolDown));
+            AvailableCells[obj].color = Color.gray;
+        }
+    }
+
+    private IEnumerator CellAnimation(Image obj, float time)
+    {
+        var defaultPos = obj.transform.localPosition;
+        var defaultScale = obj.transform.localScale;
+
+        float t = 0;
+        while (t < time)
+        {
+            obj.transform.localPosition = Vector3.Lerp(defaultPos + new Vector3(20, 30, 0), defaultPos, PositionCurve.Evaluate(t / time));
+            obj.transform.localScale = Vector3.one * ScaleCurve.Evaluate(t / time);
+
+            t += Time.deltaTime;
+            yield return null;
         }
 
+        obj.transform.localPosition = Vector3.Lerp(defaultPos + new Vector3(20, 30, 0), defaultPos, PositionCurve.Evaluate(1));
+        obj.transform.localScale = Vector3.one * ScaleCurve.Evaluate(1);
     }
+
 }
