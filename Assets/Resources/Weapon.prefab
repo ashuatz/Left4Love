@@ -51,7 +51,7 @@ MonoBehaviour:
   DefaultReChargeCoolDown: 0.7
   DefaultCapacity: 22
   BulletAliveTime: 10
-  DefaultDamage: 1
+  DefaultDamage: 3
   StartPosition: {fileID: 3179316116250010368}
   Effect: {fileID: 62286451864560987}
   GunTransform: {fileID: 1878700681206718507}

@@ -103,7 +103,7 @@ public class Player : MonoBehaviour, IDamage
 
             var dir = (LastAttacker.transform.position - transform.position).normalized;
             MoveDir = new Vector2(dir.x, dir.z);
-            StartCoroutine(Timer(2f, () => { isControllable = true; MoveDir = Vector2.zero; }));
+            StartCoroutine(Timer(1f, () => { isControllable = true; MoveDir = Vector2.zero; }));
         }
     }
 
@@ -113,7 +113,8 @@ public class Player : MonoBehaviour, IDamage
         if (delta < 0)
         {
             isInvincibility = true;
-            ProCamera2DShake.Instance.Shake(0);
+            if (playerInput is PlayerInput)
+                ProCamera2DShake.Instance.Shake(0);
             StartCoroutine(Timer(1f, () => isInvincibility = false));
             SetSpriteColor();
         }

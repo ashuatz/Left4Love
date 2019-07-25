@@ -59,6 +59,11 @@ public class PlayerInput : BaseInput
 
             if (near)
             {
+                particleRoot.transform.SetParent(near.transform);
+                particleRoot.transform.localPosition = Vector3.zero;
+                particle.Clear();
+                particle.Play();
+
                 for (int i = 0; i < playerList.Count; ++i)
                 {
                     if (playerList[i] == gameObject)

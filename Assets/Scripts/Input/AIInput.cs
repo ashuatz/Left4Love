@@ -12,6 +12,7 @@ public class AIInput : BaseInput
     public override event Action<Vector2> OnViewDirection;
 
     public override event Action<bool> OnClick;
+    public override event Action OnSpectialClick;
     #endregion
 
     #region Inspector
@@ -27,6 +28,14 @@ public class AIInput : BaseInput
     #endregion
 
     #region Event
+    private IEnumerator Start()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(UnityEngine.Random.Range(5.0f, 10.0f));
+            OnSpectialClick?.Invoke();
+        }
+    }
     private void Update()
     {
         //기본 목표 위치 설정
@@ -36,7 +45,6 @@ public class AIInput : BaseInput
         //기본 목표 위치 도착시 제거
         if (m_BasePos && Vector3.Distance(transform.position, m_BasePos.position) < 1.0f)
             m_BasePos = null;
-
 
         //거리 내의 공격 가능한 적 방향으로 공격
         Transform enemy = GetEnemyInSearchDist();

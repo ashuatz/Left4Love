@@ -22,7 +22,7 @@ public class UIHPGauge : MonoBehaviour
     private void Start()
     {
         HPGauge.fillAmount = player.HP.value / Player.MAXHP;
-        HPGauge.fillAmount = player.LoveGauge.value / Player.MAXLOVEGAUGE;
+        LoveGauge.fillAmount = player.LoveGauge.value / Player.MAXLOVEGAUGE;
     }
 
     private void LoveGauge_onNotifyDelta(float arg1, float arg2)
