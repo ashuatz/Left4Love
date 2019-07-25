@@ -23,8 +23,33 @@ public class AIInput : BaseInput
     }
     #endregion
     #region Function
-    private Transform GetBaseTargetPos()
+    private Transform GetBaseTargetPos(int forceRandIndex = -1)
     {
+        int random = (forceRandIndex == -1) ? Random.Range(0, 3) : forceRandIndex;
+
+        if(random == 0)
+        {
+            //플레이어를 공격하러 간다!
+            ZombiManager zombiManager = ZombiManager.Instance;
+            List<GameObject> ownerList = zombiManager.GetPlayerOwnerList();
+            while(true)
+            {
+                int index = Random.Range(0, ownerList.Count);
+                if (ownerList[index] != gameObject)
+                    return ownerList[index].transform;
+            }
+        }
+        else if(random == 1)
+        {
+            //적 생성지점으로 간다.
+            SpawnManager spawnManager = SpawnManager.Instance;
+        }
+        else if(random == 2)
+        {
+            //그냥 랜덤지점으로 간다.
+            PosMake posMake = PosMake.Instance;
+        }
+
         return null;
     }
     /// <summary>

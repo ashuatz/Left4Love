@@ -93,8 +93,13 @@ namespace Zombi
             zombi.Init(nextOwner);
             GetZombiPool(zombi.ownerPlayer).Add(zombi);
         }
-        #endregion
-        #region Function
+        
+        //Private
+        /// <summary>
+        /// 좀비 풀을 가져옵니다.
+        /// </summary>
+        /// <param name="owner"></param>
+        /// <returns></returns>
         private List<ZombiCharacter> GetZombiPool(GameObject owner)
         {
             List<ZombiCharacter> zombiPool;
