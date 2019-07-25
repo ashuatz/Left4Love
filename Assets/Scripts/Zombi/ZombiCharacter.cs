@@ -12,7 +12,7 @@ namespace Zombi
         #region Type
         public enum ZombiState
         {
-            Spawning,
+            Spawn,
             Idle,
             Move,
             Attack,
@@ -26,11 +26,11 @@ namespace Zombi
         #region Inspector
         [Header("Component")]
         [SerializeField] private NavMeshAgent m_Agent;
+        [SerializeField] private Rigidbody m_Rigidbody;
 
         [Header("Balance")]
         [SerializeField] private int m_MaxHP;                   //체력
         [SerializeField] private int m_Damage;                  //공격력
-        [SerializeField] private float m_Speed;                 //이동속도
         [SerializeField] private float m_ZombiSearchDist;       //다른 적 좀비를 검색하는 거리
         #endregion
         #region Get,Set
@@ -56,7 +56,7 @@ namespace Zombi
             {
                 bool isNotDied = zombiState == ZombiState.Die;
                 bool isNotLove = zombiState == ZombiState.Love;
-                bool isNotSpawning = zombiState == ZombiState.Spawning;
+                bool isNotSpawning = zombiState == ZombiState.Spawn;
 
                 return isNotDied & isNotLove & isNotSpawning;
             }
@@ -71,13 +71,13 @@ namespace Zombi
         public bool IsHealEnable => throw new NotImplementedException();
         #endregion
         #region Value
-        private GameObject m_TargetPlayer;                      //공격 타겟 플레이어
-        private ZombiCharacter m_TargetZombi;                   //공격 타겟 좀비
+        private GameObject m_TargetPlayer;                          //공격 타겟 플레이어
+        private ZombiCharacter m_TargetZombi;                       //공격 타겟 좀비
 
-        private Action[] m_StateUpdate;                         //각 State의 Update
-        private StateNextEvent[] m_StateNext;                   //각 State의 다음으로 넘어가는 조건
+        private Action[] m_StateUpdate;                             //각 State의 Update
+        private StateNextEvent[] m_StateNext;                       //각 State의 다음으로 넘어가는 조건
 
-        private SubjectValue<int> m_HP;                         //몬스터 HP
+        private SubjectValue<int> m_HP = new SubjectValue<int>();   //몬스터 HP
         #endregion
 
         #region Event
@@ -93,8 +93,10 @@ namespace Zombi
         //Unity Evnet
         private void Update()
         {
-            //SetState(m_StateNext[(int)zombiState]());
-            //m_StateUpdate[(int)zombiState]();
+            SetState(m_StateNext[(int)zombiState]());
+            m_StateUpdate[(int)zombiState]();
+
+            m_Rigidbody.velocity = Vector3.zero;
         }
         private void OnCollisionStay(Collision collision)
         {
@@ -118,7 +120,7 @@ namespace Zombi
         }
         private ZombiState StateSpawningNext()
         {
-            return ZombiState.Spawning;
+            return ZombiState.Spawn;
         }
 
         //Idle

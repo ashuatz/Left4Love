@@ -50,9 +50,9 @@ namespace Zombi
         /// 좀비를 생성합니다.
         /// </summary>
         /// <param name="owner">해당 좀비의 주인</param>
-        public ZombiCharacter SpawnZombi(GameObject owner, Transform targetPos, ZombiTypeEnum type)
+        public ZombiCharacter SpawnZombi(GameObject owner, Vector3 targetPos, ZombiTypeEnum type)
         {
-            GameObject go = Instantiate(m_ZombiPrefab[(int)type], targetPos.position, Quaternion.identity);
+            GameObject go = Instantiate(m_ZombiPrefab[(int)type], targetPos, Quaternion.identity);
             ZombiCharacter zombi = go.GetComponent<ZombiCharacter>();
             zombi.Init(owner);
 

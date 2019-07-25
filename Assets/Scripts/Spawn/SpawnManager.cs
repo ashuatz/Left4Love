@@ -52,12 +52,17 @@ public class SpawnManager : MonoSingleton<SpawnManager>
     #endregion
 
     #region Event
+    protected override void Awake()
+    {
+        base.Awake();
+        Init();
+    }
     private void Init()
     {
         m_IsInited = true;
 
-        m_ZombiSpawnTimer = m_ZombiSpawnData.spawnTime;
-        m_ItemSpawnTimer = m_ItemSpawnData.spawnTime;
+        m_ZombiSpawnTimer = m_ZombiSpawnData.startSpawnTime;
+        m_ItemSpawnTimer = m_ItemSpawnData.startSpawnTime;
         m_ZombiAttackTimer = m_ZombiAttackData.attackTime;
         m_ZombiAttackCount = m_ZombiAttackData.firstAttackCount;
     }
@@ -75,9 +80,15 @@ public class SpawnManager : MonoSingleton<SpawnManager>
         {
             for (int i = 0; i < m_ZombiSpawnPos.Length; ++i)
             {
-                int zombiIndex = GetRandomIndex(m_ZombiSpawnData.zombiPersent);
-                zombiManager.SpawnZombi(null, m_ZombiSpawnPos[i], m_ZombiSpawnData.zombiType[zombiIndex]);
+                for (int j = 0; j < m_ZombiSpawnData.spawnCount; ++j)
+                {
+                    int zombiIndex = GetRandomIndex(m_ZombiSpawnData.zombiPersent);
+                    Vector3 targetPos = m_ZombiSpawnPos[i].position + new Vector3(Random.Range(-0.1f, 0.1f), 0, Random.Range(-0.1f, 0.1f));
+                    zombiManager.SpawnZombi(gameObject, targetPos, m_ZombiSpawnData.zombiType[zombiIndex]);
+                }
             }
+
+            m_ZombiSpawnTimer = m_ZombiSpawnData.spawnTime;
         }
 
         //ItemSpawn - 아이템 생성
@@ -85,12 +96,16 @@ public class SpawnManager : MonoSingleton<SpawnManager>
         if(m_ItemSpawnTimer <= 0)
         {
             //TODO : 아이템 생성해야함
+
+            m_ItemSpawnTimer = m_ItemSpawnData.spawnTime;
         }
 
         //ZombiAttack - 바깥에서부터 좀비 공격
         m_ZombiAttackTimer -= Time.deltaTime;
         if(m_ZombiAttackTimer <= 0)
         {
+            m_ZombiAttackTimer = m_ZombiAttackData.attackTime;
+            m_ZombiAttackCount += m_ZombiAttackData.addAttackCount;
         }
     }
     #endregion
