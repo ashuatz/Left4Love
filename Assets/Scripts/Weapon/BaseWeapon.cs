@@ -15,13 +15,17 @@ public abstract class BaseWeapon : MonoBehaviour
     [SerializeField]
     protected int DefaultCapacity;
     [SerializeField]
-    protected float Range;
+    protected float BulletAliveTime;
     [SerializeField]
-    protected float DefaultDamage;
+    protected int DefaultDamage;
     
     public virtual float CoolDown { get; protected set; }
     public virtual float ReChargeCoolDown { get; protected set; }
-    public virtual float Damage { get => DefaultDamage; }
+    public virtual float Capacity { get; protected set; }
+    public virtual int Damage { get => DefaultDamage; }
 
+    public virtual GameObject Owner { get; protected set; }
+
+    public abstract void Initialize(GameObject Owner);
     public abstract IEnumerator Fire(Vector3 pos, Vector3 dir, Action onComplete);
 }

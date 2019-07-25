@@ -47,10 +47,10 @@ MonoBehaviour:
   bulletOrigin: {fileID: 6136162535097160770, guid: 26d27cfa2f737274799a222775807b44,
     type: 3}
   bulletSpeed: 15
-  DefaultCoolDown: 0.13
+  DefaultCoolDown: 0.06
   DefaultReChargeCoolDown: 1
-  DefaultCapacity: 0
-  Range: 100
+  DefaultCapacity: 13
+  BulletAliveTime: 10
   DefaultDamage: 10
 --- !u!1 &1557976012186932801
 GameObject:
