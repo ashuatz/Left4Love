@@ -65,7 +65,6 @@ public class Player : MonoBehaviour, IDamage
 
     private void Awake()
     {
-        SetWeapon();
         Attackable = true;
         isInvincibility = false;
         isControllable = true;
@@ -78,8 +77,10 @@ public class Player : MonoBehaviour, IDamage
         HP.onNotifyDelta += HP_onNotifyDelta;
         LoveGauge.onNotifyDelta += LoveGauge_onNotifyDelta;
     }
+
     private void Start()
     {
+        SetWeapon();
         ZombiManager zombi = ZombiManager.Instance;
         zombi.AddOwner(gameObject);
     }

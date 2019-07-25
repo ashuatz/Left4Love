@@ -25,7 +25,9 @@ public class GrenadeWeapon : MonoBehaviour
         collider.enabled = false;
 
         rigid.isKinematic = false;
-        rigid.AddForce(dir * 50f);
+
+        dir.Normalize();
+        rigid.AddForce(new Vector3(dir.x, 0.1f, dir.y) * 500f);
         Model.SetActive(true);
         StartCoroutine(TickAndBoom());
     }
