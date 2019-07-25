@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using Core;
 
 public abstract class BaseWeapon : MonoBehaviour
 {
@@ -29,10 +30,13 @@ public abstract class BaseWeapon : MonoBehaviour
     
     public virtual float CoolDown { get; protected set; }
     public virtual float ReChargeCoolDown { get; protected set; }
-    public virtual float Capacity { get; protected set; }
+    public virtual int TotalCapacity { get => DefaultCapacity; }
+    public virtual SubjectValue<int> Capacity { get; protected set; }
     public virtual int Damage { get => DefaultDamage; }
 
+
     public virtual GameObject Owner { get; protected set; }
+    
 
     public virtual void ReverseSprite(bool isInverse)
     {

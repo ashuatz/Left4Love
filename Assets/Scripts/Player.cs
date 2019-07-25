@@ -60,6 +60,8 @@ public class Player : MonoBehaviour, IDamage
     [SerializeField]
     private List<PlayerSpritePart> PlayerParts = new List<PlayerSpritePart>();
 
+    public event Action<BaseWeapon> OnWeaponChanged;
+
     private void Awake()
     {
         SetWeapon();
@@ -105,12 +107,14 @@ public class Player : MonoBehaviour, IDamage
         }
     }
 
-    public void SetWeapon()
+    public void SetWeapon(/*baseWeapon Weapon*/)
     {
         CurrentWeapon.transform.SetParent(HandPosition, false);
         CurrentWeapon.transform.localPosition = Vector3.zero;
         CurrentWeapon.transform.localRotation = Quaternion.identity;
         CurrentWeapon.Initialize(gameObject);
+
+        OnWeaponChanged?.Invoke(CurrentWeapon);
     }
     
     private IEnumerator Timer(float t, Action onComplete)
