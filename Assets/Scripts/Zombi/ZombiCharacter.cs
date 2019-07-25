@@ -322,6 +322,12 @@ namespace Zombi
         }
         #endregion
         #region Function
+        //Public
+        public void SetTargetPlayer(GameObject player)
+        {
+            m_TargetPlayer = player;
+        }
+
         //Private
         /// <summary>
         /// 상태를 설정한다.
